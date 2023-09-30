@@ -5,18 +5,22 @@ import { IOCategory } from './io.js';
 import { Channel, ChannelFactory } from './strip/channel.js';
 import { Aux, AuxFactory } from './strip/aux.js';
 import { BusFactory, type Bus } from './strip/bus.js';
+import type { Main } from './strip/main.js';
+import { MainFactory } from './strip/main.js';
 
 export class WingSchema implements WingObject {
     io: IO;
     channels: Map<number, Channel>;
     auxes: Map<number, Aux>;
     busses: Map<number, Bus>;
+    mains: Map<number, Main>;
     
     constructor(io: IO) {
         this.io = io;
         this.channels = new Map();
         this.auxes = new Map();
         this.busses = new Map();
+        this.mains = new Map();
     }
 
     toString() {
@@ -53,6 +57,15 @@ export class WingSchemaFactory implements ObjectFactory<WingSchema> {
             }
             var bus = BusFactory.INSTANCE.createObject(dat, schema);
             schema.busses.set(i, bus);
+        }
+        for (var i = 1; i <= 4; i++) {
+            var dat = data["main"][i];
+            if (dat == null) {
+                console.log("Reached end of main list");
+                break;
+            }
+            var main = MainFactory.INSTANCE.createObject(dat, schema);
+            schema.mains.set(i, main);
         }
         return schema;
     }
