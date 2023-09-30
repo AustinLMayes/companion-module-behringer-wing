@@ -23,6 +23,9 @@ class ModuleInstance extends InstanceBase<any> {
 		schema.auxes.forEach((auxNumber, aux) => {
 			this.log('debug', auxNumber + ": " + aux.toString());
 		});
+		schema.busses.forEach((busNumber, bus) => {
+			this.log('debug', busNumber + ": " + bus.toString());
+		});
 
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
