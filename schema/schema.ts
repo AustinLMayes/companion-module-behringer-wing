@@ -7,25 +7,57 @@ import { Aux, AuxFactory } from './strip/aux.js';
 import { BusFactory, type Bus } from './strip/bus.js';
 import type { Main } from './strip/main.js';
 import { MainFactory } from './strip/main.js';
+import { Matrix, MatrixFactory } from './strip/matrix.js';
+import type { ChannelBase } from './strip/channel_base.js';
 
 export class WingSchema implements WingObject {
     io: IO;
-    channels: Map<number, Channel>;
-    auxes: Map<number, Aux>;
-    busses: Map<number, Bus>;
-    mains: Map<number, Main>;
+    channels: Channel[]; // 40
+    auxes: Aux[]; // 8
+    busses: Bus[]; // 16
+    mains: Main[]; // 4
+    matrices: Matrix[]; // 8
     
     constructor(io: IO) {
         this.io = io;
-        this.channels = new Map();
-        this.auxes = new Map();
-        this.busses = new Map();
-        this.mains = new Map();
+        this.channels = [];
+        this.auxes = [];
+        this.busses = [];
+        this.mains = [];
+        this.matrices = [];
     }
 
     toString() {
         return this.io.toString();
     }
+
+    // Name is CH.# or AUX.#
+    getChannel(chanName: string): ChannelBase | null {
+        if (chanName == "OFF") 
+            return null;
+        if (this.channels.length == 0) {
+            throw new Error("Schema has no channels");
+        }
+        if (this.auxes.length == 0) {
+            throw new Error("Schema has no auxes");
+        }
+        if (chanName.startsWith("CH.")) {
+            var chanNumber = parseInt(chanName.substring(3));
+            if (chanNumber > 40) {
+                throw new Error("Channel number " + chanNumber + " is out of range");
+            }
+            return this.channels[chanNumber] || null;
+        }
+        if (chanName.startsWith("AUX.")) {
+            var auxNumber = parseInt(chanName.substring(4));
+            if (auxNumber > 8) {
+                throw new Error("Aux number " + auxNumber + " is out of range");
+            }
+            return this.auxes[auxNumber] || null;
+        }
+        throw new Error("Invalid channel name: " + chanName);
+    }
+
 }
 
 export class WingSchemaFactory implements ObjectFactory<WingSchema> {
@@ -38,7 +70,7 @@ export class WingSchemaFactory implements ObjectFactory<WingSchema> {
                 break;
             }
             var channel = ChannelFactory.INSTANCE.createObject(dat, schema);
-            schema.channels.set(i, channel);
+            schema.channels[i] = channel;
         }
         for (var i = 1; i <= 8; i++) {
             var dat = data["aux"][i];
@@ -47,7 +79,7 @@ export class WingSchemaFactory implements ObjectFactory<WingSchema> {
                 break;
             }
             var aux = AuxFactory.INSTANCE.createObject(dat, schema);
-            schema.auxes.set(i, aux);
+            schema.auxes[i] = aux;
         }
         for (var i = 1; i <= 16; i++) {
             var dat = data["bus"][i];
@@ -56,7 +88,7 @@ export class WingSchemaFactory implements ObjectFactory<WingSchema> {
                 break;
             }
             var bus = BusFactory.INSTANCE.createObject(dat, schema);
-            schema.busses.set(i, bus);
+            schema.busses[i] = bus;
         }
         for (var i = 1; i <= 4; i++) {
             var dat = data["main"][i];
@@ -65,7 +97,16 @@ export class WingSchemaFactory implements ObjectFactory<WingSchema> {
                 break;
             }
             var main = MainFactory.INSTANCE.createObject(dat, schema);
-            schema.mains.set(i, main);
+            schema.mains[i] = main;
+        }
+        for (var i = 1; i <= 8; i++) {
+            var dat = data["mtx"][i];
+            if (dat == null) {
+                console.log("Reached end of matrix list");
+                break;
+            }
+            var matrix = MatrixFactory.INSTANCE.createObject(dat, schema);
+            schema.matrices[i] = matrix;
         }
         return schema;
     }

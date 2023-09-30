@@ -29,6 +29,9 @@ class ModuleInstance extends InstanceBase<any> {
 		schema.mains.forEach((mainNumber, main) => {
 			this.log('debug', mainNumber + ": " + main.toString());
 		});
+		schema.matrices.forEach((matrixNumber, matrix) => {
+			this.log('debug', matrixNumber + ": " + matrix.toString());
+		});
 
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks

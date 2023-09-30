@@ -1,5 +1,5 @@
 import type { WingSchema } from "../schema.js";
-import { Main, Send, Strip, StripFactory } from "./strip.js";
+import { Main, Send } from "./strip.js";
 import type { WingColor } from "../color.js";
 import type { Input } from "../input.js";
 import { ChannelBase, ChannelBaseFactory } from "./channel_base.js";

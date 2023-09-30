@@ -31,13 +31,13 @@ export class MainFactory implements ObjectFactory<Main> {
         var matrixSends: BusSend[] = [];
         var matrixNode = data["send"];
         if (matrixNode == undefined) {
-            throw new Error("Missing required property: send");
+            throw new Error("Missing required property: send for main " + base.name);
         }
         for (var i = 1; i <= 8; i++) {
             var name = "MX" + i;
             var node = matrixNode[name];
             if (node == undefined) {
-                throw new Error("Missing required property: sends/" + name);
+                throw new Error("Missing required property: send/" + name);
             }
             matrixSends.push(BusSendFactory.INSTANCE.createObject(node, schema));
         }
