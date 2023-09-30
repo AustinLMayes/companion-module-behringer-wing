@@ -9,6 +9,7 @@ import type { Main } from './strip/main.js';
 import { MainFactory } from './strip/main.js';
 import { Matrix, MatrixFactory } from './strip/matrix.js';
 import type { ChannelBase } from './strip/channel_base.js';
+import { DCAFactory, type DCA } from './strip/dca.js';
 
 export class WingSchema implements WingObject {
     io: IO;
@@ -17,6 +18,7 @@ export class WingSchema implements WingObject {
     busses: Bus[]; // 16
     mains: Main[]; // 4
     matrices: Matrix[]; // 8
+    dcas: DCA[]; // 16
     
     constructor(io: IO) {
         this.io = io;
@@ -25,6 +27,7 @@ export class WingSchema implements WingObject {
         this.busses = [];
         this.mains = [];
         this.matrices = [];
+        this.dcas = [];
     }
 
     toString() {
@@ -107,6 +110,14 @@ export class WingSchemaFactory implements ObjectFactory<WingSchema> {
             }
             var matrix = MatrixFactory.INSTANCE.createObject(dat, schema);
             schema.matrices[i] = matrix;
+        }
+        for (var i = 1; i <= 16; i++) {
+            var dat = data["dca"][i];
+            if (dat == null) {
+                continue;
+            }
+            var dca = DCAFactory.INSTANCE.createObject(dat, schema);
+            schema.dcas[i] = dca;
         }
         return schema;
     }

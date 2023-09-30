@@ -17,20 +17,23 @@ class ModuleInstance extends InstanceBase<any> {
 	async init(config: any) {
 		var schema = parseSnapshot();
 		// this.log('debug', schema.toString());
-		schema.channels.forEach((channelNumber, channel) => {
+		schema.channels.forEach((channel, channelNumber) => {
 			this.log('debug', channelNumber + ": " + channel.toString());
 		});
-		schema.auxes.forEach((auxNumber, aux) => {
+		schema.auxes.forEach((aux, auxNumber) => {
 			this.log('debug', auxNumber + ": " + aux.toString());
 		});
-		schema.busses.forEach((busNumber, bus) => {
+		schema.busses.forEach((bus, busNumber) => {
 			this.log('debug', busNumber + ": " + bus.toString());
 		});
-		schema.mains.forEach((mainNumber, main) => {
+		schema.mains.forEach((main, mainNumber) => {
 			this.log('debug', mainNumber + ": " + main.toString());
 		});
-		schema.matrices.forEach((matrixNumber, matrix) => {
+		schema.matrices.forEach((matrix, matrixNumber) => {
 			this.log('debug', matrixNumber + ": " + matrix.toString());
+		});
+		schema.dcas.forEach((dca, dcaNumber) => {
+			this.log('debug', dcaNumber + ": " + dca.toString());
 		});
 
 		this.updateActions() // export actions
