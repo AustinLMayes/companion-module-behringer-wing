@@ -20,6 +20,9 @@ class ModuleInstance extends InstanceBase<any> {
 		schema.channels.forEach((channelNumber, channel) => {
 			this.log('debug', channelNumber + ": " + channel.toString());
 		});
+		schema.auxes.forEach((auxNumber, aux) => {
+			this.log('debug', auxNumber + ": " + aux.toString());
+		});
 
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks

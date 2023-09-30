@@ -2,15 +2,18 @@ import type { WingObject, ObjectFactory } from './base.js';
 import { Input, InputFactory } from './input.js';
 import { Output, OutputFactory } from './output.js';
 import { IOCategory } from './io.js';
-import { Channel, ChannelFactory } from './channel.js';
+import { Channel, ChannelFactory } from './strip/channel.js';
+import { Aux, AuxFactory } from './strip/aux.js';
 
 export class WingSchema implements WingObject {
     io: IO;
     channels: Map<number, Channel>;
+    auxes: Map<number, Aux>;
     
     constructor(io: IO) {
         this.io = io;
         this.channels = new Map();
+        this.auxes = new Map();
     }
 
     toString() {
@@ -29,6 +32,15 @@ export class WingSchemaFactory implements ObjectFactory<WingSchema> {
             }
             var channel = ChannelFactory.INSTANCE.createObject(dat, schema);
             schema.channels.set(i, channel);
+        }
+        for (var i = 1; i <= 8; i++) {
+            var dat = data["aux"][i];
+            if (dat == null) {
+                console.log("Reached end of aux list");
+                break;
+            }
+            var aux = AuxFactory.INSTANCE.createObject(dat, schema);
+            schema.auxes.set(i, aux);
         }
         return schema;
     }
