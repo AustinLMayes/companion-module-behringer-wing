@@ -3,6 +3,7 @@ import { Regex, type SomeCompanionConfigField } from '@companion-module/base'
 import osc from 'osc';
 const { UDPPort } = osc
 import {parseSnapshot} from './schema/parse.js'
+import crypto from 'crypto'
 
 class ModuleInstance extends InstanceBase<any> {
 	oscClient: typeof UDPPort = null
@@ -14,7 +15,16 @@ class ModuleInstance extends InstanceBase<any> {
 	}
 
 	async init(config: any) {
-		this.log('debug', parseSnapshot().toString());
+		var schema = parseSnapshot();
+		// this.log('debug', schema.toString());
+		schema.io.outputs.forEach((outputs, category) => {
+			outputs.forEach(output => {
+				var input = output.linkedInput(schema);
+				if (input != undefined) {
+					this.log('debug', category.jsonName + " " + output.outputNumber + " -> " + input.name);
+				}
+			});
+		});
 
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
@@ -72,7 +82,7 @@ class ModuleInstance extends InstanceBase<any> {
 			return
 		}
 		// Get random port so we can have multiple instances
-		var port = 10024 + require('crypto').randomBytes(2).readUInt16LE(0)
+		var port = 10024 + crypto.randomBytes(2).readUInt16LE(0)
 		this.oscClient = new UDPPort({
 			localAddress: '0.0.0.0',
 			localPort: port,
