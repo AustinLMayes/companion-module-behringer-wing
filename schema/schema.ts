@@ -10,6 +10,7 @@ import { MainFactory } from './strip/main.js';
 import { Matrix, MatrixFactory } from './strip/matrix.js';
 import type { ChannelBase } from './strip/channel_base.js';
 import { DCAFactory, type DCA } from './strip/dca.js';
+import { MuteGroupFactory, type MuteGroup } from './mute_group.js';
 
 export class WingSchema implements WingObject {
     io: IO;
@@ -19,6 +20,7 @@ export class WingSchema implements WingObject {
     mains: Main[]; // 4
     matrices: Matrix[]; // 8
     dcas: DCA[]; // 16
+    muteGroups: MuteGroup[]; // 8
     
     constructor(io: IO) {
         this.io = io;
@@ -28,6 +30,7 @@ export class WingSchema implements WingObject {
         this.mains = [];
         this.matrices = [];
         this.dcas = [];
+        this.muteGroups = [];
     }
 
     toString() {
@@ -118,6 +121,14 @@ export class WingSchemaFactory implements ObjectFactory<WingSchema> {
             }
             var dca = DCAFactory.INSTANCE.createObject(dat, schema);
             schema.dcas[i] = dca;
+        }
+        for (var i = 1; i <= 8; i++) {
+            var dat = data["mgrp"][i];
+            if (dat == null) {
+                continue;
+            }
+            var muteGroup = MuteGroupFactory.INSTANCE.createObject(dat, schema);
+            schema.muteGroups[i] = muteGroup;
         }
         return schema;
     }

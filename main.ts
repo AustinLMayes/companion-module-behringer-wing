@@ -35,6 +35,9 @@ class ModuleInstance extends InstanceBase<any> {
 		schema.dcas.forEach((dca, dcaNumber) => {
 			this.log('debug', dcaNumber + ": " + dca.toString());
 		});
+		schema.muteGroups.forEach((muteGroup, muteGroupNumber) => {
+			this.log('debug', muteGroupNumber + ": " + muteGroup.toString());
+		});
 
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
