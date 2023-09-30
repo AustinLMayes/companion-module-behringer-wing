@@ -2,12 +2,15 @@ import type { WingObject, ObjectFactory } from './base.js';
 import { Input, InputFactory } from './input.js';
 import { Output, OutputFactory } from './output.js';
 import { IOCategory } from './io.js';
+import { Channel, ChannelFactory } from './channel.js';
 
 export class WingSchema implements WingObject {
     io: IO;
+    channels: Map<number, Channel>;
     
     constructor(io: IO) {
         this.io = io;
+        this.channels = new Map();
     }
 
     toString() {
@@ -16,8 +19,17 @@ export class WingSchema implements WingObject {
 }
 
 export class WingSchemaFactory implements ObjectFactory<WingSchema> {
-    createObject(data: any): WingSchema {
-        var schema = new WingSchema(IOFactory.INSTANCE.createObject(data["io"]));
+    createObject(data: any, s: WingSchema | null): WingSchema {
+        var schema = new WingSchema(IOFactory.INSTANCE.createObject(data["io"], null));
+        for (var i = 1; i <= 40; i++) {
+            var dat = data["ch"][i];
+            if (dat == null) {
+                console.log("Reached end of channel list");
+                break;
+            }
+            var channel = ChannelFactory.INSTANCE.createObject(dat, schema);
+            schema.channels.set(i, channel);
+        }
         return schema;
     }
 }
@@ -58,18 +70,26 @@ class IO implements WingObject {
         });
         return str;
     }
+
+    findInput(category: IOCategory, inputNumber: number): Input | null {
+        var inputs = this.inputs.get(category);
+        if (inputs == undefined) {
+            return null;
+        }
+        return inputs.find(input => input.inputNumber == inputNumber) || null;
+    }
 }
 
 class IOFactory implements ObjectFactory<IO> {
-    createObject(data: any): IO {
+    createObject(data: any, schema: WingSchema | null): IO {
         var altSwitch = data["altsw"] == 1;
         var io = new IO(altSwitch);
-        this.readInputs(data['in'], io);
-        this.readOutputs(data['out'], io);
+        this.readInputs(data['in'], io, schema);
+        this.readOutputs(data['out'], io, schema);
         return io;
     }
 
-    readInputs(data: any, io: IO) {
+    readInputs(data: any, io: IO, schema: WingSchema | null) {
         IOCategory.ALL.forEach(category => {
             var inputs: Input[] = [];
             for (var i = 1; i <= category.maxInputs; i++) {
@@ -84,14 +104,14 @@ class IOFactory implements ObjectFactory<IO> {
                     break;
                 }
                 raw["_id"] = i;
-                var input = InputFactory.INSTANCE.createObject(raw);
+                var input = InputFactory.INSTANCE.createObject(raw, schema);
                 inputs.push(input);
             }
             io.inputs.set(category, inputs);
         });
     }
 
-    readOutputs(data: any, io: IO) {
+    readOutputs(data: any, io: IO, schema: WingSchema | null) {
         IOCategory.ALL.forEach(category => {
             var outputs: Output[] = [];
             for (var i = 1; i <= category.maxInputs; i++) {
@@ -106,7 +126,7 @@ class IOFactory implements ObjectFactory<IO> {
                     break;
                 }
                 raw["_id"] = i;
-                var output = OutputFactory.INSTANCE.createObject(raw);
+                var output = OutputFactory.INSTANCE.createObject(raw, schema);
                 outputs.push(output);
             }
             io.outputs.set(category, outputs);

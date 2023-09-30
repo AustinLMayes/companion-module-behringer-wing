@@ -45,7 +45,7 @@ class Output {
 }
 
 class OutputFactory implements ObjectFactory<Output> {
-    createObject(data: any): Output {
+    createObject(data: any, schema: WingSchema | null): Output {
         var outputNumber = data["_id"];
         var inputNumber = OutputFactory.INPUT_NUMBER_PARSER.parse(data);
         var inputGroup = OutputFactory.INPUT_GROUP_PARSER.parse(data);

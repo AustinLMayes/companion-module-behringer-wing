@@ -17,13 +17,8 @@ class ModuleInstance extends InstanceBase<any> {
 	async init(config: any) {
 		var schema = parseSnapshot();
 		// this.log('debug', schema.toString());
-		schema.io.outputs.forEach((outputs, category) => {
-			outputs.forEach(output => {
-				var input = output.linkedInput(schema);
-				if (input != undefined) {
-					this.log('debug', category.jsonName + " " + output.outputNumber + " -> " + input.name);
-				}
-			});
+		schema.channels.forEach((channelNumber, channel) => {
+			this.log('debug', channelNumber + ": " + channel.toString());
 		});
 
 		this.updateActions() // export actions

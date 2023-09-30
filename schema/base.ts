@@ -1,7 +1,8 @@
 import { WingColor } from "./color.js";
+import type { WingSchema } from "./schema.js";
 
 export interface ObjectFactory<T extends WingObject> {
-    createObject(data: any): T;
+    createObject(data: any, schema: WingSchema | null): T;
 }
 
 export class ObjectPropertyParser<T> {

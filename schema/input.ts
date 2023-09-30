@@ -2,6 +2,7 @@ import { Named } from "./base.js";
 import type { ObjectFactory } from "./base.js";
 import { ObjectPropertyParser } from "./base.js";
 import { WingColor } from "./color.js";
+import type { WingSchema } from "./schema.js";
 
 class Input extends Named {
     inputNumber: number;
@@ -33,7 +34,7 @@ enum InputMode {
 }
 
 class InputFactory implements ObjectFactory<Input> {
-    createObject(data: any): Input {
+    createObject(data: any, schema: WingSchema | null): Input {
         var name = Named.NAME_PARSER.parse(data);
         var color = Named.COLOR_PARSER.parse(data);
         var icon = Named.ICON_PARSER.parse(data);
