@@ -36,8 +36,6 @@ class InputMode {
 
 @WingObject
 class Input extends Named {
-    @WingProperty("_id", Number)
-    inputNumber: number = -1;
     @WingProperty("mode", InputMode)
     inputMode: InputMode = InputMode.MONO;
     @WingProperty("g", Number)

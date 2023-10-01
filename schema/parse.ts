@@ -7,5 +7,6 @@ export const parseSnapshot = () => {
     var json = JSON.parse(fs.readFileSync(JSON_PATH, "utf8"));
     var schema = new WingSchema();
     schema.parse(json["ae_data"]);
+    schema.completeJsonPath();
     return schema;
 };

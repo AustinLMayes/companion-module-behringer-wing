@@ -21,7 +21,7 @@ export function WingProperty(jsonPath: string, resType: any, maxArrayLength: num
                 this["__deserialized_keys"][top] = [];
             }
             this["__deserialized_keys"][top].push({ key: propertyKey, jsonPath: jsonPath, parseMethodName: parseMethodName});
-            
+
             this[parseMethodName] = function (data: any) {
                 // See if JSONPath exists in the value
                 var split = jsonPath.split("/");
@@ -69,11 +69,16 @@ export function WingProperty(jsonPath: string, resType: any, maxArrayLength: num
                             for (var i = 0; i < array.length; i++) {
                                 var element = array[i];
                                 if (element != null) {
-                                    res[i] = parse(resType, element, this[propertyKey][i]);
+                                    var parsed = parse(resType, element, this[propertyKey][i]) as any;
+                                    if (parsed == null || parsed == undefined) {
+                                        throw new Error("Error parsing array element " + i + " for property " + propertyKey + ": " + element + " is not of type " + resType.name);
+                                    }
+                                    parsed._id = element._id;
+                                    res[i] = parsed;
                                 }
                             }
                         } else if (resType.name != "Object") {
-                            res = parse(resType, data, this[propertyKey]);
+                            res = parse(resType, data, this[propertyKey]) as any;
                         } else {
                             throw new Error("Cannot parse object of type " + resType.name);
                         }
@@ -82,7 +87,7 @@ export function WingProperty(jsonPath: string, resType: any, maxArrayLength: num
                         }
                         this[propertyKey] = res;
                     } else {
-                        console.log("Property " + propertyKey + " not found for " + this.constructor.name);
+                        // console.log("Property " + propertyKey + " not found for " + this.constructor.name);
                     }
                 } catch (e) {
                     throw new Error("Error parsing property " + propertyKey + ": " + e.message);
@@ -97,7 +102,6 @@ export function WingObject(target: any, property?: ClassDecoratorContext) {
     if (target.prototype.parse != undefined) {
         throw new Error("Class " + target.name + " already has a parse() method");
     }
-    console.log("Adding parse() method to class " + target.name);
     Object.defineProperty(target.prototype, "parse", {
         value: function (this: any, data: any) {
             // Add map of top level keys to object
@@ -113,6 +117,67 @@ export function WingObject(target: any, property?: ClassDecoratorContext) {
                 }
             }
             return this;
+        }
+    });
+
+    Object.defineProperty(target.prototype, "__jsonPath", {
+        value: "",
+        writable: true
+    });
+
+    Object.defineProperty(target.prototype, "completeJsonPath", {
+        value: function (this: any) {
+            // Add map of top level keys to object
+            if (this["__deserialized_keys"] == undefined) {
+                this["__deserialized_keys"] = {};
+            }
+            var thisPath = this["__jsonPath"] == undefined ? "" : this["__jsonPath"];
+            // Parse each property
+            for (var key in this.__deserialized_keys) {
+                var properties = this.__deserialized_keys[key];
+                for (var i = 0; i < properties.length; i++) {
+                    var property = properties[i];
+                    var fullPath = thisPath + "/" + property.jsonPath;
+                    if (this[property.key] instanceof Array) {
+                        for (var j = 0; j < this[property.key].length; j++) {
+                            var element = this[property.key][j];
+                            if (element != null && element instanceof Object && element.__jsonPath != undefined) {
+                                element["__jsonPath"] = fullPath + "/" + element._id;
+                                if (element.completeJsonPath != undefined) {
+                                    element.completeJsonPath();
+                                }
+                            }
+                        }
+                    } else if (this[property.key] instanceof Object && this[property.key].__jsonPath != undefined) {
+                        this[property.key]["__jsonPath"] = fullPath;
+                        if (this[property.key].completeJsonPath != undefined) {
+                            this[property.key].completeJsonPath();
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+    });
+
+    // Add getJsonPath(field: string) method
+    Object.defineProperty(target.prototype, "getJsonPath", {
+        value: function (this: any, field: string) {
+            // Add map of top level keys to object
+            if (this["__deserialized_keys"] == undefined) {
+                this["__deserialized_keys"] = {};
+            }
+            // Parse each property
+            for (var key in this.__deserialized_keys) {
+                var properties = this.__deserialized_keys[key];
+                for (var i = 0; i < properties.length; i++) {
+                    var property = properties[i];
+                    if (property.key == field) {
+                        return this["__jsonPath"] + "/" + property.jsonPath;
+                    }
+                }
+            }
+            throw new Error("Field " + field + " not found");
         }
     });
 }
