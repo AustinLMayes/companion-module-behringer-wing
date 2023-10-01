@@ -1,6 +1,7 @@
 import { Strip, Main } from "./strip.js";
 import { WingObject, WingProperty } from "../parse/decorators.js";
 import { registerAdapter } from "../parse/adapter_registry.js";
+import { CompanionVariable } from "../../variables/variable-decorators.js";
 
 class BusMode {
     constructor(public name: string) { }
@@ -37,10 +38,13 @@ class BusMode {
 @WingObject
 export class BusSend {
     @WingProperty("on", Boolean)
+    @CompanionVariable("On")
     on: boolean = false;
     @WingProperty("lvl", Number)
+    @CompanionVariable("Level")
     level: number = 0;
     @WingProperty("pre", Boolean)
+    @CompanionVariable("Pre Fader")
     pre: boolean = false;
 
     toString() {
@@ -51,14 +55,19 @@ export class BusSend {
 @WingObject
 export class Bus extends Strip {
     @WingProperty("busmono", Boolean)
+    @CompanionVariable("Mono")
     mono: boolean = false;
     @WingProperty("busmode", BusMode)
+    @CompanionVariable("Mode")
     mode: BusMode = BusMode.GRP;
     @WingProperty("main", Main, 4)
+    @CompanionVariable("Main Send")
     mainSends: Main[]; // 4
     @WingProperty("send", BusSend, 8, key => !key.startsWith("MX"))
+    @CompanionVariable("Bus Send")
     busSends: BusSend[]; // 8
     @WingProperty("send", BusSend, 8, key => key.startsWith("MX"))
+    @CompanionVariable("Matrix Send")
     matrixSends: BusSend[]; // 8
 
     toString() {

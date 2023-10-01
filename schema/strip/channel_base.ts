@@ -2,6 +2,7 @@ import type { Input } from "../input.js";
 import { Main, Send, Strip } from "./strip.js";
 import { WingObject, WingProperty } from "../parse/decorators.js";
 import { IOCategory } from "../io.js";
+import { CompanionVariable } from "../../variables/variable-decorators.js";
 
 @WingObject
 class InputData {
@@ -35,8 +36,10 @@ export class ChannelBase extends Strip {
     @WingProperty("in/conn", InputData)
     in: InputData = new InputData();
     @WingProperty("main", Main, 4)
+    @CompanionVariable("Main")
     mainSends: Main[];
     @WingProperty("send", Send, 16)
+    @CompanionVariable("Send")
     sends: Send[];
 
     toString() {

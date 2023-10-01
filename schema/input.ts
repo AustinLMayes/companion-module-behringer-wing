@@ -1,3 +1,4 @@
+import { CompanionVariable } from "../variables/variable-decorators.js";
 import { Named } from "./base.js";
 import { registerAdapter } from "./parse/adapter_registry.js";
 import { WingObject, WingProperty } from "./parse/decorators.js";
@@ -37,14 +38,19 @@ class InputMode {
 @WingObject
 class Input extends Named {
     @WingProperty("mode", InputMode)
+    @CompanionVariable("Mode")
     inputMode: InputMode = InputMode.MONO;
     @WingProperty("g", Number)
+    @CompanionVariable("Gain")
     inputGain: number = 0;
     @WingProperty("vph", Boolean)
+    @CompanionVariable("Phantom Power")
     phantomPower: boolean = false;
     @WingProperty("mute", Boolean)
+    @CompanionVariable("Muted")
     mute: boolean = false;
     @WingProperty("pol", Boolean)
+    @CompanionVariable("Polarity Reversed")
     polarity: boolean = false;
 
     toString() {

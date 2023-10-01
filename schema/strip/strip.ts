@@ -1,24 +1,33 @@
 import { registerAdapter } from "../parse/adapter_registry.js";
 import { Named } from "../base.js";
 import { WingObject, WingProperty } from "../parse/decorators.js";
+import { CompanionVariable } from "../../variables/variable-decorators.js";
 
 
 export class Strip extends Named {
     @WingProperty("in/set/trim", Number)
+    @CompanionVariable("Trim")
     trim: number = 0;
     @WingProperty("in/set/bal", Number)
+    @CompanionVariable("Balance")
     balance: number = 0;
     @WingProperty("led", Boolean)
+    @CompanionVariable("Scribble Light")
     scribbleLight: boolean = false;
     @WingProperty("mute", Boolean)
+    @CompanionVariable("Muted")
     mute: boolean = false;
     @WingProperty("fdr", Number)
+    @CompanionVariable("Fader Level")
     fader: number = -144;
     @WingProperty("pan", Number)
+    @CompanionVariable("Pan")
     pan: number = 0;
     @WingProperty("wid", Number)
+    @CompanionVariable("Pan Width")
     panWidth: number = 0;
     @WingProperty("solo", Boolean)
+    @CompanionVariable("Soloed")
     solo: boolean = false;
 
     toString() {
@@ -29,10 +38,13 @@ export class Strip extends Named {
 @WingObject
 export class Main {
     @WingProperty("on", Boolean)
+    @CompanionVariable("On")
     on: boolean = false;
     @WingProperty("lvl", Number)
+    @CompanionVariable("Level")
     level: number = 0;
     @WingProperty("pre", Boolean)
+    @CompanionVariable("Pre Fader")
     pre: boolean = false;
 
     toString() {
@@ -75,16 +87,22 @@ class SendMode {
 @WingObject
 export class Send {
     @WingProperty("on", Boolean)
+    @CompanionVariable("On")
     on: boolean = false;
     @WingProperty("lvl", Number)
+    @CompanionVariable("Level")
     level: number = 0;
     @WingProperty("pan", Number)
+    @CompanionVariable("Pan")
     pan: number = 0;
     @WingProperty("wid", Number)
+    @CompanionVariable("Pan Width")
     panWidth: number = 0;
     @WingProperty("plink", Boolean)
+    @CompanionVariable("Pan Link")
     panLink: boolean = false;
     @WingProperty("mode", SendMode)
+    @CompanionVariable("Mode")
     mode: SendMode = SendMode.PRE;
     
     toString() {

@@ -10,34 +10,48 @@ import type { ChannelBase } from './strip/channel_base.js';
 import { DCA } from './strip/dca.js';
 import { MuteGroup } from './mute_group.js';
 import { WingObject, WingProperty } from './parse/decorators.js';
+import { CompanionVariable } from '../variables/variable-decorators.js';
 
 @WingObject
 class InputData {
     @WingProperty("LCL", Input, 8)
+    @CompanionVariable("Local Input")
     localIns: Input[];
     @WingProperty("AUX", Input, 8)
+    @CompanionVariable("Aux Input")
     auxIns: Input[];
     @WingProperty("A", Input, 48)
+    @CompanionVariable("AES A Input")
     aesAIns: Input[];
     @WingProperty("B", Input, 48)
+    @CompanionVariable("AES B Input")
     aesBIns: Input[];
     @WingProperty("C", Input, 48)
+    @CompanionVariable("AES C Input")
     aesCIns: Input[];
     @WingProperty("SC", Input, 32)
+    @CompanionVariable("Stage Connect Input")
     stageConnectIns: Input[];
     @WingProperty("USB", Input, 48)
+    @CompanionVariable("USB Input")
     usbIns: Input[];
     @WingProperty("CRD", Input, 64)
+    @CompanionVariable("Card Input")
     cardIns: Input[];
     @WingProperty("MOD", Input, 64)
+    @CompanionVariable("Module Input")
     moduleIns: Input[];
     @WingProperty("PLAY", Input, 4)
+    @CompanionVariable("Playback Input")
     playbackIns: Input[];
     @WingProperty("AES", Input, 2)
+    @CompanionVariable("AES EBU Input")
     aesEbuIns: Input[];
     @WingProperty("USR", Input, 24)
+    @CompanionVariable("User Signal Input")
     userSignalIns: Input[];
     @WingProperty("OSC", Input, 2)
+    @CompanionVariable("Oscelator Input")
     oscelatorIns: Input[];
 
     toString() {
@@ -75,30 +89,43 @@ class InputData {
 @WingObject
 class OutputData {
     @WingProperty("LCL", Output, 8)
+    @CompanionVariable("Local Output")
     localOuts: Output[];
     @WingProperty("AUX", Output, 8)
+    @CompanionVariable("Aux Output")
     auxOuts: Output[];
     @WingProperty("A", Output, 48)
+    @CompanionVariable("AES A Output")
     aesAOuts: Output[];
     @WingProperty("B", Output, 48)
+    @CompanionVariable("AES B Output")
     aesBOuts: Output[];
     @WingProperty("C", Output, 48)
+    @CompanionVariable("AES C Output")
     aesCOuts: Output[];
     @WingProperty("SC", Output, 32)
+    @CompanionVariable("Stage Connect Output")
     stageConnectOuts: Output[];
     @WingProperty("USB", Output, 48)
+    @CompanionVariable("USB Output")
     usbOuts: Output[];
     @WingProperty("CRD", Output, 64)
+    @CompanionVariable("Card Output")
     cardOuts: Output[];
     @WingProperty("MOD", Output, 64)
+    @CompanionVariable("Module Output")
     moduleOuts: Output[];
     @WingProperty("REC", Output, 4)
+    @CompanionVariable("Recording Output")
     recordingOuts: Output[];
     @WingProperty("AES", Output, 2)
+    @CompanionVariable("AES EBU Output")
     aesEbuOuts: Output[];
     @WingProperty("USR", Output, 24)
+    @CompanionVariable("User Signal Output")
     userSignalOuts: Output[];
     @WingProperty("OSC", Output, 2)
+    @CompanionVariable("Oscelator Output")
     oscelatorOuts: Output[];
 
     toString() {
@@ -136,10 +163,13 @@ class OutputData {
 @WingObject
 class IO {
     @WingProperty("altsw", Boolean)
+    @CompanionVariable("Alt Switch")
     altSwitch: boolean = false;
     @WingProperty("in", InputData)
+    @CompanionVariable("")
     inputsData: InputData = new InputData();
     @WingProperty("out", OutputData)
+    @CompanionVariable("")
     outputsData: OutputData = new OutputData();
 
     toString() {
@@ -187,20 +217,28 @@ class IO {
 @WingObject
 export class WingSchema {
     @WingProperty("io", IO)
+    @CompanionVariable("")
     io: IO = new IO();
     @WingProperty("ch", Channel, 40)
+    @CompanionVariable("Channel")
     channels: Channel[]; // 40
     @WingProperty("aux", Aux, 8)
+    @CompanionVariable("Aux")
     auxes: Aux[]; // 8
     @WingProperty("bus", Bus, 16)
+    @CompanionVariable("Bus")
     busses: Bus[]; // 16
     @WingProperty("main", Main, 4)
+    @CompanionVariable("Main")
     mains: Main[]; // 4
     @WingProperty("mtx", Matrix, 8)
+    @CompanionVariable("Matrix")
     matrices: Matrix[]; // 8
     @WingProperty("dca", DCA, 16)
+    @CompanionVariable("DCA")
     dcas: DCA[]; // 16
     @WingProperty("mgrp", MuteGroup, 8)
+    @CompanionVariable("Mute Group")
     muteGroups: MuteGroup[]; // 8
 
     toString() {

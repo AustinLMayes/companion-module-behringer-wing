@@ -1,5 +1,4 @@
 import { parse } from "./adapter_registry.js";
-import "reflect-metadata";
 
 export function WingProperty(jsonPath: string, resType: any, maxArrayLength: number = 0, keyFilter: (key: string) => boolean = (key: string) => true) {
     return function (target: any, property: ClassFieldDecoratorContext) {

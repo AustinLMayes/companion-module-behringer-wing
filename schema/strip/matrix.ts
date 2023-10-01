@@ -3,6 +3,7 @@ import type { WingSchema } from "../schema.js";
 import type { ChannelBase } from "./channel_base.js";
 import { WingObject, WingProperty } from "../parse/decorators.js";
 import { registerAdapter } from "../parse/adapter_registry.js";
+import { CompanionVariable } from "../../variables/variable-decorators.js";
 
 class TapPoint {
     constructor(public readonly name: string) { }
@@ -36,14 +37,19 @@ class TapPoint {
 @WingObject
 class DirectInput {
     @WingProperty("on", Boolean)
+    @CompanionVariable("On")
     on: boolean = false;
     @WingProperty("lvl", Number)
+    @CompanionVariable("Level")
     level: number = 0;
     @WingProperty("inv", Boolean)
+    @CompanionVariable("Polarity Inverted")
     polarityInvert: boolean = false;
     @WingProperty("in", String)
+    @CompanionVariable("Input")
     inRaw: string = "OFF";
     @WingProperty("tap", TapPoint)
+    @CompanionVariable("Tap Point")
     tap: TapPoint = TapPoint.PRE;
 
     getIn(schema: WingSchema | null): ChannelBase | null {
@@ -64,8 +70,10 @@ class DirectInput {
 @WingObject
 export class Matrix extends Strip {
     @WingProperty("dir", DirectInput, 2)
+    @CompanionVariable("Direct Input")
     directIns: DirectInput[];
     @WingProperty("busmono", Boolean)
+    @CompanionVariable("Mono")
     mono: boolean = false;
 
     toString() {
