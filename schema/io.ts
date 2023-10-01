@@ -1,78 +1,78 @@
-import { ObjectPropertyParser } from "./base.js";
+import { registerAdapter } from "./parse/adapter_registry.js";
 
 export class IOCategory {
-    jsonName: string;
-    maxInputs: number;
+    constructor(public readonly code: string) {}
 
-    constructor(jsonName: string, maxInputs: number) {
-        this.jsonName = jsonName;
-        this.maxInputs = maxInputs;
-    }
+    static OFF = new IOCategory("OFF");
+    static LOCAL = new IOCategory("LCL");
+    static AUX = new IOCategory("AUX");
+    static AES_A = new IOCategory("A");
+    static AES_B = new IOCategory("B");
+    static AES_C = new IOCategory("C");
+    static STAGE_CONNECT = new IOCategory("SC");
+    static USB = new IOCategory("USB");
+    static CARD = new IOCategory("CRD");
+    static MODULE = new IOCategory("MOD");
+    static AES = new IOCategory("AES");
+    static USER = new IOCategory("USR");
+    static OSCOLATOR = new IOCategory("OSC");
+    static BUS = new IOCategory("BUS");
+    static MAIN = new IOCategory("MAIN");
+    static MATRIX = new IOCategory("MTX");
+    static SEND = new IOCategory("SEND");
+    static MONITOR = new IOCategory("MON");
 
     toString() {
-        return this.jsonName;
+        return this.code;
     }
 
-    static readonly NONE = new IOCategory("OFF", 0);
-    static readonly LOCAL = new IOCategory("LCL", 8);
-    static readonly AUXILIARY = new IOCategory("AUX", 8);
-    static readonly AES_A = new IOCategory("A", 48);
-    static readonly AES_B = new IOCategory("B", 48); 
-    static readonly AES_C = new IOCategory("C", 48);
-    static readonly STAGE_CONNECT = new IOCategory("SC", 32);
-    static readonly USB = new IOCategory("USB", 48);
-    static readonly CARD = new IOCategory("CRD", 64);
-    static readonly MODULE = new IOCategory("MOD", 64);
-    static readonly AES_EBU = new IOCategory("AES", 2);
-    static readonly USER_SIGNAL = new IOCategory("USR", 24);
-    static readonly OSCELATOR = new IOCategory("OSC", 2);
-    static readonly BUS = new IOCategory("$BUS", 24);
-    static readonly MAIN = new IOCategory("$MAIN", 8);
-    static readonly MATRIX = new IOCategory("$MTX", 16);
-    static readonly FX_SEND = new IOCategory("$SEND", 32);
-    static readonly MONITOR = new IOCategory("$MON", 4);
-
-    // All categories
-    static readonly ALL = [
-        IOCategory.LOCAL,
-        IOCategory.AUXILIARY,
-        IOCategory.AES_A,
-        IOCategory.AES_B,
-        IOCategory.AES_C,
-        IOCategory.STAGE_CONNECT,
-        IOCategory.USB,
-        IOCategory.CARD,
-        IOCategory.MODULE,
-        IOCategory.AES_EBU,
-        IOCategory.USER_SIGNAL,
-        IOCategory.OSCELATOR,
-        IOCategory.BUS,
-        IOCategory.MAIN,
-        IOCategory.MATRIX,
-        IOCategory.FX_SEND,
-        IOCategory.MONITOR
-    ];
-
-    static readonly STEREO_SINGLE = [
-        IOCategory.USER_SIGNAL,
-        IOCategory.OSCELATOR,
-        IOCategory.BUS,
-        IOCategory.MAIN,
-        IOCategory.MATRIX,
-        IOCategory.FX_SEND,
-        IOCategory.MONITOR
-    ];
-
-    static parser(jsonName: string): ObjectPropertyParser<IOCategory> {
-        return new ObjectPropertyParser(jsonName, value => {
-            if (value == "OFF") {
-                return IOCategory.NONE;
+    static {
+        registerAdapter(IOCategory, {
+            serialize: function (data: string) {
+                switch (data) {
+                    case "OFF":
+                        return IOCategory.OFF;
+                    case "LCL":
+                        return IOCategory.LOCAL;
+                    case "AUX":
+                        return IOCategory.AUX;
+                    case "A":
+                        return IOCategory.AES_A;
+                    case "B":
+                        return IOCategory.AES_B;
+                    case "C":
+                        return IOCategory.AES_C;
+                    case "SC":
+                        return IOCategory.STAGE_CONNECT;
+                    case "USB":
+                        return IOCategory.USB;
+                    case "CRD":
+                        return IOCategory.CARD;
+                    case "MOD":
+                        return IOCategory.MODULE;
+                    case "AES":
+                        return IOCategory.AES;
+                    case "USR":
+                        return IOCategory.USER;
+                    case "OSC":
+                        return IOCategory.OSCOLATOR;
+                    case "BUS":
+                        return IOCategory.BUS;
+                    case "MAIN":
+                        return IOCategory.MAIN;
+                    case "MTX":
+                        return IOCategory.MATRIX;
+                    case "SEND":
+                        return IOCategory.SEND;
+                    case "MON":
+                        return IOCategory.MONITOR;
+                    default:
+                        throw new Error("Unknown IO category: " + data);
+                }
+            },
+            deserialize: function (data: IOCategory) {
+                return data.code;
             }
-            var res = IOCategory.ALL.filter(category => category.jsonName.replaceAll("$", "") == value)[0];
-            if (res != undefined) {
-                return res;
-            }
-            throw new Error("Invalid IO category: " + value);
-        }, undefined, false);
+        });
     }
 }

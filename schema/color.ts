@@ -1,3 +1,5 @@
+import { registerAdapter } from "./parse/adapter_registry.js";
+
 export class WingColor {
     index: number;
     name: string;
@@ -5,6 +7,10 @@ export class WingColor {
     constructor(index: number, name: string) {
         this.index = index;
         this.name = name;
+    }
+
+    toString() {
+        return this.name;
     }
 
     static GRAY_BLUE = new WingColor(0, "gray blue");
@@ -39,3 +45,12 @@ export class WingColor {
         return WingColor.values[index];
     }
 }
+
+registerAdapter(WingColor, {
+    serialize: (data: string) => {
+        return WingColor.fromIndex(parseInt(data) - 1);
+    },
+    deserialize: (data: WingColor) => {
+        return (data.index + 1).toString();
+    }
+});

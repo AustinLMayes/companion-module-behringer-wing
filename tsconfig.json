@@ -3,10 +3,8 @@
 	"include": ["**/*.ts", "*.js", "*.ts"],
 	"exclude": ["node_modules/**"],
 	"compilerOptions": {
-		"moduleResolution": "node",
 		"allowJs": true,
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
+		"strict": false,
 		"resolveJsonModule": true,
 	}
 }

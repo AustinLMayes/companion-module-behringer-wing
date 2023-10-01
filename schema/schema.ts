@@ -1,40 +1,227 @@
-import type { WingObject, ObjectFactory } from './base.js';
-import { Input, InputFactory } from './input.js';
-import { Output, OutputFactory } from './output.js';
+import { Input } from './input.js';
+import { Output } from './output.js';
 import { IOCategory } from './io.js';
-import { Channel, ChannelFactory } from './strip/channel.js';
-import { Aux, AuxFactory } from './strip/aux.js';
-import { BusFactory, type Bus } from './strip/bus.js';
-import type { Main } from './strip/main.js';
-import { MainFactory } from './strip/main.js';
-import { Matrix, MatrixFactory } from './strip/matrix.js';
+import { Channel } from './strip/channel.js';
+import { Aux } from './strip/aux.js';
+import { Bus } from './strip/bus.js';
+import { Main } from './strip/main.js';
+import { Matrix } from './strip/matrix.js';
 import type { ChannelBase } from './strip/channel_base.js';
-import { DCAFactory, type DCA } from './strip/dca.js';
-import { MuteGroupFactory, type MuteGroup } from './mute_group.js';
+import { DCA } from './strip/dca.js';
+import { MuteGroup } from './mute_group.js';
+import { WingObject, WingProperty } from './parse/decorators.js';
 
-export class WingSchema implements WingObject {
-    io: IO;
-    channels: Channel[]; // 40
-    auxes: Aux[]; // 8
-    busses: Bus[]; // 16
-    mains: Main[]; // 4
-    matrices: Matrix[]; // 8
-    dcas: DCA[]; // 16
-    muteGroups: MuteGroup[]; // 8
-    
-    constructor(io: IO) {
-        this.io = io;
-        this.channels = [];
-        this.auxes = [];
-        this.busses = [];
-        this.mains = [];
-        this.matrices = [];
-        this.dcas = [];
-        this.muteGroups = [];
-    }
+@WingObject
+class InputData {
+    @WingProperty("LCL", Input, 8)
+    localIns: Input[];
+    @WingProperty("AUX", Input, 8)
+    auxIns: Input[];
+    @WingProperty("A", Input, 48)
+    aesAIns: Input[];
+    @WingProperty("B", Input, 48)
+    aesBIns: Input[];
+    @WingProperty("C", Input, 48)
+    aesCIns: Input[];
+    @WingProperty("SC", Input, 32)
+    stageConnectIns: Input[];
+    @WingProperty("USB", Input, 48)
+    usbIns: Input[];
+    @WingProperty("CRD", Input, 64)
+    cardIns: Input[];
+    @WingProperty("MOD", Input, 64)
+    moduleIns: Input[];
+    @WingProperty("PLAY", Input, 4)
+    playbackIns: Input[];
+    @WingProperty("AES", Input, 2)
+    aesEbuIns: Input[];
+    @WingProperty("USR", Input, 24)
+    userSignalIns: Input[];
+    @WingProperty("OSC", Input, 2)
+    oscelatorIns: Input[];
 
     toString() {
-        return this.io.toString();
+        var str = "InputData:\n";
+        str += "\tlocal inputs:\n";
+        str += "\t\t" + this.localIns+ "\n";
+        str += "\taux inputs:\n";
+        str += "\t\t" + this.auxIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tAES A inputs:\n";
+        str += "\t\t" + this.aesAIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tAES B inputs:\n";
+        str += "\t\t" + this.aesBIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tAES C inputs:\n";
+        str += "\t\t" + this.aesCIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tstage connect inputs:\n";
+        str += "\t\t" + this.stageConnectIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tUSB inputs:\n";
+        str += "\t\t" + this.usbIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tcard inputs:\n";
+        str += "\t\t" + this.cardIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tmodule inputs:\n";
+        str += "\t\t" + this.moduleIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tplayback inputs:\n";
+        str += "\t\t" + this.playbackIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tAES EBU inputs:\n";
+        str += "\t\t" + this.aesEbuIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\tuser signal inputs:\n";
+        str += "\t\t" + this.userSignalIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        str += "\toscelator inputs:\n";
+        str += "\t\t" + this.oscelatorIns.map(input => input.toString()).join("\n\t\t") + "\n";
+        return str;
+    }
+}
+
+@WingObject
+class OutputData {
+    @WingProperty("LCL", Output, 8)
+    localOuts: Output[];
+    @WingProperty("AUX", Output, 8)
+    auxOuts: Output[];
+    @WingProperty("A", Output, 48)
+    aesAOuts: Output[];
+    @WingProperty("B", Output, 48)
+    aesBOuts: Output[];
+    @WingProperty("C", Output, 48)
+    aesCOuts: Output[];
+    @WingProperty("SC", Output, 32)
+    stageConnectOuts: Output[];
+    @WingProperty("USB", Output, 48)
+    usbOuts: Output[];
+    @WingProperty("CRD", Output, 64)
+    cardOuts: Output[];
+    @WingProperty("MOD", Output, 64)
+    moduleOuts: Output[];
+    @WingProperty("REC", Output, 4)
+    recordingOuts: Output[];
+    @WingProperty("AES", Output, 2)
+    aesEbuOuts: Output[];
+    @WingProperty("USR", Output, 24)
+    userSignalOuts: Output[];
+    @WingProperty("OSC", Output, 2)
+    oscelatorOuts: Output[];
+
+    toString() {
+        var str = "OutputData:\n";
+        str += "\tlocal outputs:\n";
+        str += "\t\t" + this.localOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\taux outputs:\n";
+        str += "\t\t" + this.auxOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tAES A outputs:\n";
+        str += "\t\t" + this.aesAOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tAES B outputs:\n";
+        str += "\t\t" + this.aesBOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tAES C outputs:\n";
+        str += "\t\t" + this.aesCOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tstage connect outputs:\n";
+        str += "\t\t" + this.stageConnectOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tUSB outputs:\n";
+        str += "\t\t" + this.usbOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tcard outputs:\n";
+        str += "\t\t" + this.cardOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tmodule outputs:\n";
+        str += "\t\t" + this.moduleOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\trecording outputs:\n";
+        str += "\t\t" + this.recordingOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tAES EBU outputs:\n";
+        str += "\t\t" + this.aesEbuOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\tuser signal outputs:\n";
+        str += "\t\t" + this.userSignalOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        str += "\toscelator outputs:\n";
+        str += "\t\t" + this.oscelatorOuts.map(output => output.toString()).join("\n\t\t") + "\n";
+        return str;
+    }
+}
+
+@WingObject
+class IO {
+    @WingProperty("altsw", Boolean)
+    altSwitch: boolean = false;
+    @WingProperty("in", InputData)
+    inputsData: InputData = new InputData();
+    @WingProperty("out", OutputData)
+    outputsData: OutputData = new OutputData();
+
+    toString() {
+        var str = "IO:\n";
+        str += "\talt switch: " + this.altSwitch + "\n";
+        str += "\tinputs:\n";
+        str += "\t\t" + this.inputsData.toString().replace(/\n/g, "\n\t\t") + "\n";
+        str += "\toutputs:\n";
+        str += "\t\t" + this.outputsData.toString().replace(/\n/g, "\n\t\t") + "\n";
+        return str;
+    }
+
+    findInput(category: IOCategory, inputNumber: number): Input | null {
+        switch (category) {
+            case IOCategory.LOCAL:
+                return this.inputsData.localIns[inputNumber] || null;
+            case IOCategory.AUX:
+                return this.inputsData.auxIns[inputNumber] || null;
+            case IOCategory.AES_A:
+                return this.inputsData.aesAIns[inputNumber] || null;
+            case IOCategory.AES_B:
+                return this.inputsData.aesBIns[inputNumber] || null;
+            case IOCategory.AES_C:
+                return this.inputsData.aesCIns[inputNumber] || null;
+            case IOCategory.STAGE_CONNECT:
+                return this.inputsData.stageConnectIns[inputNumber] || null;
+            case IOCategory.USB:
+                return this.inputsData.usbIns[inputNumber] || null;
+            case IOCategory.CARD:
+                return this.inputsData.cardIns[inputNumber] || null;
+            case IOCategory.MODULE:
+                return this.inputsData.moduleIns[inputNumber] || null;
+            case IOCategory.USER:
+                return this.inputsData.userSignalIns[inputNumber] || null;
+            case IOCategory.OSCOLATOR:
+                return this.inputsData.oscelatorIns[inputNumber] || null;
+            case IOCategory.AES:
+                return this.inputsData.aesEbuIns[inputNumber] || null;
+            default:
+                throw new Error("Invalid input category: " + category);
+        }
+    }
+}
+
+@WingObject
+export class WingSchema {
+    @WingProperty("io", IO)
+    io: IO = new IO();
+    @WingProperty("ch", Channel, 40)
+    channels: Channel[]; // 40
+    @WingProperty("aux", Aux, 8)
+    auxes: Aux[]; // 8
+    @WingProperty("bus", Bus, 16)
+    busses: Bus[]; // 16
+    @WingProperty("main", Main, 4)
+    mains: Main[]; // 4
+    @WingProperty("mtx", Matrix, 8)
+    matrices: Matrix[]; // 8
+    @WingProperty("dca", DCA, 16)
+    dcas: DCA[]; // 16
+    @WingProperty("mgrp", MuteGroup, 8)
+    muteGroups: MuteGroup[]; // 8
+
+    toString() {
+        var str = "WingSchema:\n";
+        // str += "IO:\n";
+        // str += this.io.toString().replace(/\n/g, "\n\t") + "\n";
+        str += "Channels:\n";
+        str += "\t" + this.channels.map(channel => channel.toString()).join("\n\t") + "\n";
+        str += "Auxes:\n";
+        str += "\t" + this.auxes.map(aux => aux.toString()).join("\n\t") + "\n";
+        str += "Busses:\n";
+        str += "\t" + this.busses.map(bus => bus.toString()).join("\n\t") + "\n";
+        str += "Mains:\n";
+        str += "\t" + this.mains.map(main => main.toString()).join("\n\t") + "\n";
+        str += "Matrices:\n";
+        str += "\t" + this.matrices.map(matrix => matrix.toString()).join("\n\t") + "\n";
+        str += "DCAs:\n";
+        str += "\t" + this.dcas.map(dca => dca.toString()).join("\n\t") + "\n";
+        str += "Mute Groups:\n";
+        str += "\t" + this.muteGroups.map(muteGroup => muteGroup.toString()).join("\n\t") + "\n";
+        return str;
     }
 
     // Name is CH.# or AUX.#
@@ -64,174 +251,4 @@ export class WingSchema implements WingObject {
         throw new Error("Invalid channel name: " + chanName);
     }
 
-}
-
-export class WingSchemaFactory implements ObjectFactory<WingSchema> {
-    createObject(data: any, s: WingSchema | null): WingSchema {
-        var schema = new WingSchema(IOFactory.INSTANCE.createObject(data["io"], null));
-        for (var i = 1; i <= 40; i++) {
-            var dat = data["ch"][i];
-            if (dat == null) {
-                console.log("Reached end of channel list");
-                break;
-            }
-            var channel = ChannelFactory.INSTANCE.createObject(dat, schema);
-            schema.channels[i] = channel;
-        }
-        for (var i = 1; i <= 8; i++) {
-            var dat = data["aux"][i];
-            if (dat == null) {
-                console.log("Reached end of aux list");
-                break;
-            }
-            var aux = AuxFactory.INSTANCE.createObject(dat, schema);
-            schema.auxes[i] = aux;
-        }
-        for (var i = 1; i <= 16; i++) {
-            var dat = data["bus"][i];
-            if (dat == null) {
-                console.log("Reached end of bus list");
-                break;
-            }
-            var bus = BusFactory.INSTANCE.createObject(dat, schema);
-            schema.busses[i] = bus;
-        }
-        for (var i = 1; i <= 4; i++) {
-            var dat = data["main"][i];
-            if (dat == null) {
-                console.log("Reached end of main list");
-                break;
-            }
-            var main = MainFactory.INSTANCE.createObject(dat, schema);
-            schema.mains[i] = main;
-        }
-        for (var i = 1; i <= 8; i++) {
-            var dat = data["mtx"][i];
-            if (dat == null) {
-                console.log("Reached end of matrix list");
-                break;
-            }
-            var matrix = MatrixFactory.INSTANCE.createObject(dat, schema);
-            schema.matrices[i] = matrix;
-        }
-        for (var i = 1; i <= 16; i++) {
-            var dat = data["dca"][i];
-            if (dat == null) {
-                continue;
-            }
-            var dca = DCAFactory.INSTANCE.createObject(dat, schema);
-            schema.dcas[i] = dca;
-        }
-        for (var i = 1; i <= 8; i++) {
-            var dat = data["mgrp"][i];
-            if (dat == null) {
-                continue;
-            }
-            var muteGroup = MuteGroupFactory.INSTANCE.createObject(dat, schema);
-            schema.muteGroups[i] = muteGroup;
-        }
-        return schema;
-    }
-}
-
-class IO implements WingObject {
-    altSwitch: boolean;
-    inputs: Map<IOCategory, Input[]>;
-    outputs: Map<IOCategory, Output[]>;
-
-    constructor(altSwitch: boolean) {
-        this.altSwitch = altSwitch;
-        this.inputs = new Map();
-        this.outputs = new Map();
-    }
-
-    toString() {
-        var str = "IO:\n";
-        IOCategory.ALL.forEach(category => {
-            str += category.jsonName + ":\n";
-            if (this.inputs.has(category)) {
-                var inputs: Input[] = this.inputs.get(category) as Input[];
-                var i = 1;
-                inputs.forEach(input => {
-                    var input: Input = input as Input;
-                    str += "    " + i + " - " + input.toString() + "\n";
-                    i++;
-                });
-            }
-            if (this.outputs.has(category)) {
-                var outputs: Output[] = this.outputs.get(category) as Output[];
-                var i = 1;
-                outputs.forEach(output => {
-                    var output: Output = output as Output;
-                    str += "    " + i + " - " + output.toString() + "\n";
-                    i++;
-                });
-            }
-        });
-        return str;
-    }
-
-    findInput(category: IOCategory, inputNumber: number): Input | null {
-        var inputs = this.inputs.get(category);
-        if (inputs == undefined) {
-            return null;
-        }
-        return inputs.find(input => input.inputNumber == inputNumber) || null;
-    }
-}
-
-class IOFactory implements ObjectFactory<IO> {
-    createObject(data: any, schema: WingSchema | null): IO {
-        var altSwitch = data["altsw"] == 1;
-        var io = new IO(altSwitch);
-        this.readInputs(data['in'], io, schema);
-        this.readOutputs(data['out'], io, schema);
-        return io;
-    }
-
-    readInputs(data: any, io: IO, schema: WingSchema | null) {
-        IOCategory.ALL.forEach(category => {
-            var inputs: Input[] = [];
-            for (var i = 1; i <= category.maxInputs; i++) {
-                // If the input is null, we've reached the end of the list
-                if (data[category.jsonName] == null) {
-                    console.log("Reached end of input list for category " + category.jsonName);
-                    break;
-                }
-                var raw = data[category.jsonName][i];
-                if (raw == null) {
-                    console.log("Reached end of input list for category " + category.jsonName);
-                    break;
-                }
-                raw["_id"] = i;
-                var input = InputFactory.INSTANCE.createObject(raw, schema);
-                inputs.push(input);
-            }
-            io.inputs.set(category, inputs);
-        });
-    }
-
-    readOutputs(data: any, io: IO, schema: WingSchema | null) {
-        IOCategory.ALL.forEach(category => {
-            var outputs: Output[] = [];
-            for (var i = 1; i <= category.maxInputs; i++) {
-                // If the output is null, we've reached the end of the list
-                if (data[category.jsonName] == null) {
-                    console.log("Reached end of output list for category " + category.jsonName);
-                    break;
-                }
-                var raw = data[category.jsonName][i];
-                if (raw == null) {
-                    console.log("Reached end of output list for category " + category.jsonName);
-                    break;
-                }
-                raw["_id"] = i;
-                var output = OutputFactory.INSTANCE.createObject(raw, schema);
-                outputs.push(output);
-            }
-            io.outputs.set(category, outputs);
-        });
-    }
-
-    static INSTANCE = new IOFactory();
 }
