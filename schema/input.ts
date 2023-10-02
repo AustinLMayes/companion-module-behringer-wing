@@ -1,5 +1,6 @@
-import { CompanionVariable } from "../variables/variable-decorators.js";
+import { ExposedValue, rangedNunberSelectType, type UserFacingObject } from "../companion-decorators.js";
 import { Named } from "./base.js";
+import type { IOCategory } from "./io.js";
 import { registerAdapter } from "./parse/adapter_registry.js";
 import { WingObject, WingProperty } from "./parse/decorators.js";
 
@@ -12,6 +13,18 @@ class InputMode {
 
     toString() {
         return this.code;
+    }
+
+    static modeSelectType(): object {
+        return {
+            type: "dropdown",
+            default: "M",
+            choices: [
+                { id: "M", label: "Mono" },
+                { id: "ST", label: "Stereo" },
+                { id: "M/S", label: "Mid Side" }
+            ]
+        }
     }
 
     static {
@@ -36,26 +49,32 @@ class InputMode {
 }
 
 @WingObject
-class Input extends Named {
+class Input extends Named implements UserFacingObject {
+    _id: number;
+    category: IOCategory;
     @WingProperty("mode", InputMode)
-    @CompanionVariable("Mode")
+    @ExposedValue("Mode", InputMode.modeSelectType())
     inputMode: InputMode = InputMode.MONO;
     @WingProperty("g", Number)
-    @CompanionVariable("Gain")
+    @ExposedValue("Gain", rangedNunberSelectType(-3, 45.5), true)
     inputGain: number = 0;
     @WingProperty("vph", Boolean)
-    @CompanionVariable("Phantom Power")
+    @ExposedValue("Phantom Power")
     phantomPower: boolean = false;
     @WingProperty("mute", Boolean)
-    @CompanionVariable("Muted")
+    @ExposedValue("Muted")
     mute: boolean = false;
     @WingProperty("pol", Boolean)
-    @CompanionVariable("Polarity Reversed")
+    @ExposedValue("Polarity Reversed")
     polarity: boolean = false;
 
     toString() {
         this.inputMode.valueOf
         return this.name + " (mode: " + this.inputMode + ", gain: " + this.inputGain + ", phantom power: " + this.phantomPower + ", mute: " + this.mute + ", polarity reversed: " + this.polarity + ")";
+    }
+
+    describe() {
+        return this.category + " Input " + this._id;
     }
 }
 

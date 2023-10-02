@@ -145,12 +145,18 @@ export function WingObject(target: any, property?: ClassDecoratorContext) {
                                 if (element.completeJsonPath != undefined) {
                                     element.completeJsonPath();
                                 }
+                                if (element.postParse != undefined) {
+                                    element.postParse();
+                                }
                             }
                         }
                     } else if (this[property.key] instanceof Object && this[property.key].__jsonPath != undefined) {
                         this[property.key]["__jsonPath"] = fullPath;
                         if (this[property.key].completeJsonPath != undefined) {
                             this[property.key].completeJsonPath();
+                        }
+                        if (this[property.key].postParse != undefined) {
+                            this[property.key].postParse();
                         }
                     }
                 }

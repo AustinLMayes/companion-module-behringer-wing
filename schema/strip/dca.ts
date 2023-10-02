@@ -1,21 +1,26 @@
-import { CompanionVariable } from "../../variables/variable-decorators.js";
+import { ExposedValue, rangedNunberSelectType } from "../../companion-decorators.js";
 import { Named } from "../base.js";
 import { WingObject, WingProperty } from "../parse/decorators.js";
 
 @WingObject
-export class DCA extends Named {
+export class DCA extends Named implements UserFacingObject {
+    _id: number;
     @WingProperty("led", Boolean)
-    @CompanionVariable("Scribble Light")
+    @ExposedValue("Scribble Light")
     scribbleLight: boolean = false;
     @WingProperty("mute", Boolean)
-    @CompanionVariable("Muted")
+    @ExposedValue("Muted")
     mute: boolean = false;
     @WingProperty("fdr", Number)
-    @CompanionVariable("Fader Level")
+    @ExposedValue("Fader Level", rangedNunberSelectType(-144, 10), true)
     fader: number = -144;
     @WingProperty("$solo", Boolean)
-    @CompanionVariable("Soloed")
+    @ExposedValue("Soloed")
     solo: boolean = false;
+
+    describe(): string {
+        return "DCA " + this._id
+    }
 
     toString() {
         return this.name + " (scribble light: " + this.scribbleLight + ", mute: " + this.mute + ", fader: " + this.fader + ", solo: " + this.solo + ")";

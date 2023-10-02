@@ -1,9 +1,10 @@
-import { InstanceBase, runEntrypoint, InstanceStatus, type CompanionVariableDefinition, type CompanionVariableValues } from '@companion-module/base'
+import { InstanceBase, runEntrypoint, InstanceStatus, type CompanionVariableDefinition, type CompanionVariableValues, type CompanionActionDefinition, type CompanionActionDefinitions, type CompanionFeedbackDefinitions } from '@companion-module/base'
 import { Regex, type SomeCompanionConfigField } from '@companion-module/base'
 import osc from 'osc';
 const { UDPPort } = osc
 import {parseSnapshot} from './schema/parse.js'
 import crypto from 'crypto'
+import { registerActionsAndFeedbacks } from './companion-decorators.js'
 
 class ModuleInstance extends InstanceBase<any> {
 	oscClient: typeof UDPPort = null
@@ -18,13 +19,13 @@ class ModuleInstance extends InstanceBase<any> {
 		var schema = parseSnapshot();
 
 		const variables: CompanionVariableDefinition[] = []
-
 		const values: CompanionVariableValues = {}
 
-		schema.initCompanionVariables(variables, values)
+		schema.initCompanionData(variables, values)
 
 		this.setVariableDefinitions(variables)
 		this.setVariableValues(values)
+		registerActionsAndFeedbacks(this)
 
 		// this.log('debug', "Finished parsing schema" + schema);
 

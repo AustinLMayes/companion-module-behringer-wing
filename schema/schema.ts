@@ -10,49 +10,69 @@ import type { ChannelBase } from './strip/channel_base.js';
 import { DCA } from './strip/dca.js';
 import { MuteGroup } from './mute_group.js';
 import { WingObject, WingProperty } from './parse/decorators.js';
-import { CompanionVariable } from '../variables/variable-decorators.js';
+import { ExposedValue, type UserFacingObject } from '../companion-decorators.js';
 
 @WingObject
-class InputData {
+class InputData implements UserFacingObject {
     @WingProperty("LCL", Input, 8)
-    @CompanionVariable("Local Input")
+    @ExposedValue("Local Input")
     localIns: Input[];
     @WingProperty("AUX", Input, 8)
-    @CompanionVariable("Aux Input")
+    @ExposedValue("Aux Input")
     auxIns: Input[];
     @WingProperty("A", Input, 48)
-    @CompanionVariable("AES A Input")
+    @ExposedValue("AES A Input")
     aesAIns: Input[];
     @WingProperty("B", Input, 48)
-    @CompanionVariable("AES B Input")
+    @ExposedValue("AES B Input")
     aesBIns: Input[];
     @WingProperty("C", Input, 48)
-    @CompanionVariable("AES C Input")
+    @ExposedValue("AES C Input")
     aesCIns: Input[];
     @WingProperty("SC", Input, 32)
-    @CompanionVariable("Stage Connect Input")
+    @ExposedValue("Stage Connect Input")
     stageConnectIns: Input[];
     @WingProperty("USB", Input, 48)
-    @CompanionVariable("USB Input")
+    @ExposedValue("USB Input")
     usbIns: Input[];
     @WingProperty("CRD", Input, 64)
-    @CompanionVariable("Card Input")
+    @ExposedValue("Card Input")
     cardIns: Input[];
     @WingProperty("MOD", Input, 64)
-    @CompanionVariable("Module Input")
+    @ExposedValue("Module Input")
     moduleIns: Input[];
     @WingProperty("PLAY", Input, 4)
-    @CompanionVariable("Playback Input")
+    @ExposedValue("Playback Input")
     playbackIns: Input[];
     @WingProperty("AES", Input, 2)
-    @CompanionVariable("AES EBU Input")
+    @ExposedValue("AES EBU Input")
     aesEbuIns: Input[];
     @WingProperty("USR", Input, 24)
-    @CompanionVariable("User Signal Input")
+    @ExposedValue("User Signal Input")
     userSignalIns: Input[];
     @WingProperty("OSC", Input, 2)
-    @CompanionVariable("Oscelator Input")
+    @ExposedValue("Oscelator Input")
     oscelatorIns: Input[];
+
+    describe(): string {
+        return "Wing IO Inputs";
+    }
+
+    postParse() {
+        this.localIns.forEach(input => input.category = IOCategory.LOCAL);
+        this.auxIns.forEach(input => input.category = IOCategory.AUX);
+        this.aesAIns.forEach(input => input.category = IOCategory.AES_A);
+        this.aesBIns.forEach(input => input.category = IOCategory.AES_B);
+        this.aesCIns.forEach(input => input.category = IOCategory.AES_C);
+        this.stageConnectIns.forEach(input => input.category = IOCategory.STAGE_CONNECT);
+        this.usbIns.forEach(input => input.category = IOCategory.USB);
+        this.cardIns.forEach(input => input.category = IOCategory.CARD);
+        this.moduleIns.forEach(input => input.category = IOCategory.MODULE);
+        this.playbackIns.forEach(input => input.category = IOCategory.PLAYBACK);
+        this.aesEbuIns.forEach(input => input.category = IOCategory.AES);
+        this.userSignalIns.forEach(input => input.category = IOCategory.USER);
+        this.oscelatorIns.forEach(input => input.category = IOCategory.OSCOLATOR);
+    }
 
     toString() {
         var str = "InputData:\n";
@@ -87,46 +107,50 @@ class InputData {
 }
 
 @WingObject
-class OutputData {
+class OutputData implements UserFacingObject {
     @WingProperty("LCL", Output, 8)
-    @CompanionVariable("Local Output")
+    @ExposedValue("Local Output")
     localOuts: Output[];
     @WingProperty("AUX", Output, 8)
-    @CompanionVariable("Aux Output")
+    @ExposedValue("Aux Output")
     auxOuts: Output[];
     @WingProperty("A", Output, 48)
-    @CompanionVariable("AES A Output")
+    @ExposedValue("AES A Output")
     aesAOuts: Output[];
     @WingProperty("B", Output, 48)
-    @CompanionVariable("AES B Output")
+    @ExposedValue("AES B Output")
     aesBOuts: Output[];
     @WingProperty("C", Output, 48)
-    @CompanionVariable("AES C Output")
+    @ExposedValue("AES C Output")
     aesCOuts: Output[];
     @WingProperty("SC", Output, 32)
-    @CompanionVariable("Stage Connect Output")
+    @ExposedValue("Stage Connect Output")
     stageConnectOuts: Output[];
     @WingProperty("USB", Output, 48)
-    @CompanionVariable("USB Output")
+    @ExposedValue("USB Output")
     usbOuts: Output[];
     @WingProperty("CRD", Output, 64)
-    @CompanionVariable("Card Output")
+    @ExposedValue("Card Output")
     cardOuts: Output[];
     @WingProperty("MOD", Output, 64)
-    @CompanionVariable("Module Output")
+    @ExposedValue("Module Output")
     moduleOuts: Output[];
     @WingProperty("REC", Output, 4)
-    @CompanionVariable("Recording Output")
+    @ExposedValue("Recording Output")
     recordingOuts: Output[];
     @WingProperty("AES", Output, 2)
-    @CompanionVariable("AES EBU Output")
+    @ExposedValue("AES EBU Output")
     aesEbuOuts: Output[];
     @WingProperty("USR", Output, 24)
-    @CompanionVariable("User Signal Output")
+    @ExposedValue("User Signal Output")
     userSignalOuts: Output[];
     @WingProperty("OSC", Output, 2)
-    @CompanionVariable("Oscelator Output")
+    @ExposedValue("Oscelator Output")
     oscelatorOuts: Output[];
+
+    describe(): string {
+        return "Wing IO Outputs";
+    }
 
     toString() {
         var str = "OutputData:\n";
@@ -161,15 +185,15 @@ class OutputData {
 }
 
 @WingObject
-class IO {
+class IO implements UserFacingObject {
     @WingProperty("altsw", Boolean)
-    @CompanionVariable("Alt Switch")
+    @ExposedValue("Alt Switch")
     altSwitch: boolean = false;
     @WingProperty("in", InputData)
-    @CompanionVariable("")
+    @ExposedValue("")
     inputsData: InputData = new InputData();
     @WingProperty("out", OutputData)
-    @CompanionVariable("")
+    @ExposedValue("")
     outputsData: OutputData = new OutputData();
 
     toString() {
@@ -180,6 +204,10 @@ class IO {
         str += "\toutputs:\n";
         str += "\t\t" + this.outputsData.toString().replace(/\n/g, "\n\t\t") + "\n";
         return str;
+    }
+
+    describe(): string {
+        return "Wing IO";
     }
 
     findInput(category: IOCategory, inputNumber: number): Input | null {
@@ -215,30 +243,30 @@ class IO {
 }
 
 @WingObject
-export class WingSchema {
+export class WingSchema implements UserFacingObject {
     @WingProperty("io", IO)
-    @CompanionVariable("")
+    @ExposedValue("")
     io: IO = new IO();
     @WingProperty("ch", Channel, 40)
-    @CompanionVariable("Channel")
+    @ExposedValue("Channel")
     channels: Channel[]; // 40
     @WingProperty("aux", Aux, 8)
-    @CompanionVariable("Aux")
+    @ExposedValue("Aux")
     auxes: Aux[]; // 8
     @WingProperty("bus", Bus, 16)
-    @CompanionVariable("Bus")
+    @ExposedValue("Bus")
     busses: Bus[]; // 16
     @WingProperty("main", Main, 4)
-    @CompanionVariable("Main")
+    @ExposedValue("Main")
     mains: Main[]; // 4
     @WingProperty("mtx", Matrix, 8)
-    @CompanionVariable("Matrix")
+    @ExposedValue("Matrix")
     matrices: Matrix[]; // 8
     @WingProperty("dca", DCA, 16)
-    @CompanionVariable("DCA")
+    @ExposedValue("DCA")
     dcas: DCA[]; // 16
     @WingProperty("mgrp", MuteGroup, 8)
-    @CompanionVariable("Mute Group")
+    @ExposedValue("Mute Group")
     muteGroups: MuteGroup[]; // 8
 
     toString() {
@@ -260,6 +288,10 @@ export class WingSchema {
         str += "Mute Groups:\n";
         str += "\t" + this.muteGroups.map(muteGroup => muteGroup.toString()).join("\n\t") + "\n";
         return str;
+    }
+
+    describe(): string {
+        return "Wing";
     }
 
     // Name is CH.# or AUX.#

@@ -21,6 +21,7 @@ export class IOCategory {
     static MATRIX = new IOCategory("MTX");
     static SEND = new IOCategory("SEND");
     static MONITOR = new IOCategory("MON");
+    static PLAYBACK = new IOCategory("PB");
 
     toString() {
         return this.code;

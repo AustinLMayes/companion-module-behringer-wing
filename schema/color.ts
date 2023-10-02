@@ -54,3 +54,16 @@ registerAdapter(WingColor, {
         return (data.index + 1).toString();
     }
 });
+
+export function colorSelectType(): object {
+    return {
+        type: "select",
+        options: WingColor.values.map((color) => {
+            return {
+                value: color.index.toString(),
+                label: color.name
+            };
+        }),
+        default: "0"
+    };
+}

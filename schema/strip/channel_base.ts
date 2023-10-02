@@ -2,7 +2,7 @@ import type { Input } from "../input.js";
 import { Main, Send, Strip } from "./strip.js";
 import { WingObject, WingProperty } from "../parse/decorators.js";
 import { IOCategory } from "../io.js";
-import { CompanionVariable } from "../../variables/variable-decorators.js";
+import { ExposedValue, type UserFacingObject } from "../../companion-decorators.js";
 
 @WingObject
 class InputData {
@@ -36,11 +36,20 @@ export class ChannelBase extends Strip {
     @WingProperty("in/conn", InputData)
     in: InputData = new InputData();
     @WingProperty("main", Main, 4)
-    @CompanionVariable("Main")
+    @ExposedValue("Main")
     mainSends: Main[];
     @WingProperty("send", Send, 16)
-    @CompanionVariable("Send")
+    @ExposedValue("Send")
     sends: Send[];
+
+    postParse() {
+        for (var i = 0; i < this.mainSends.length; i++) {
+            this.mainSends[i].description = this.constructor.name + " " + this._id + " Main " + (i + 1);
+        }
+        for (var i = 0; i < this.sends.length; i++) {
+            this.sends[i].description = this.constructor.name + " " + this._id + " Send " + (i + 1);
+        }
+    }
 
     toString() {
         var str = super.toString() + " (auto source: " + this.autoSource + ", manual alt: " + this.manualAlt + ", \ninput: " + this.in + ", \nmain sends: [";

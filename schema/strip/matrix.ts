@@ -3,7 +3,7 @@ import type { WingSchema } from "../schema.js";
 import type { ChannelBase } from "./channel_base.js";
 import { WingObject, WingProperty } from "../parse/decorators.js";
 import { registerAdapter } from "../parse/adapter_registry.js";
-import { CompanionVariable } from "../../variables/variable-decorators.js";
+import { ExposedValue, rangedNunberSelectType, type UserFacingObject } from "../../companion-decorators.js";
 
 class TapPoint {
     constructor(public readonly name: string) { }
@@ -13,6 +13,17 @@ class TapPoint {
 
     toString() {
         return this.name;
+    }
+
+    static selectType(): object {
+        return {
+            type: "dropdown",
+            default: "PRE",
+            choices: [
+                { id: "PRE", label: "Pre Fader" },
+                { id: "POST", label: "Post Fader" }
+            ]
+        }
     }
 
     static {
@@ -35,22 +46,27 @@ class TapPoint {
 }
 
 @WingObject
-class DirectInput {
+class DirectInput implements UserFacingObject {
+    description: string;
     @WingProperty("on", Boolean)
-    @CompanionVariable("On")
+    @ExposedValue("On")
     on: boolean = false;
     @WingProperty("lvl", Number)
-    @CompanionVariable("Level")
+    @ExposedValue("Level", rangedNunberSelectType(-144, 10), true)
     level: number = 0;
     @WingProperty("inv", Boolean)
-    @CompanionVariable("Polarity Inverted")
+    @ExposedValue("Polarity Inverted")
     polarityInvert: boolean = false;
     @WingProperty("in", String)
-    @CompanionVariable("Input")
+    @ExposedValue("Input")
     inRaw: string = "OFF";
     @WingProperty("tap", TapPoint)
-    @CompanionVariable("Tap Point")
+    @ExposedValue("Tap Point", TapPoint.selectType())
     tap: TapPoint = TapPoint.PRE;
+
+    describe(): string {
+        return this.description;
+    }
 
     getIn(schema: WingSchema | null): ChannelBase | null {
         if (schema == null) {
@@ -68,13 +84,23 @@ class DirectInput {
 }
 
 @WingObject
-export class Matrix extends Strip {
+export class Matrix extends Strip implements UserFacingObject {
     @WingProperty("dir", DirectInput, 2)
-    @CompanionVariable("Direct Input")
+    @ExposedValue("Direct Input")
     directIns: DirectInput[];
     @WingProperty("busmono", Boolean)
-    @CompanionVariable("Mono")
+    @ExposedValue("Mono")
     mono: boolean = false;
+
+    describe(): string {
+        return "Matrix " + this._id;
+    }
+
+    postParse() {
+        this.directIns.forEach((direct, i) => {
+            direct.description = "Matrix " + this._id + " Direct Input " + i + 1;
+        });
+    }
 
     toString() {
         var str = super.toString() + " (mono: " + this.mono + ", \ndirect ins: [";

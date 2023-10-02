@@ -1,7 +1,7 @@
 import { Strip, Main } from "./strip.js";
 import { WingObject, WingProperty } from "../parse/decorators.js";
 import { registerAdapter } from "../parse/adapter_registry.js";
-import { CompanionVariable } from "../../variables/variable-decorators.js";
+import { ExposedValue, rangedNunberSelectType, type UserFacingObject } from "../../companion-decorators.js";
 
 class BusMode {
     constructor(public name: string) { }
@@ -12,6 +12,18 @@ class BusMode {
 
     toString() {
         return this.name;
+    }
+
+    static selectType(): object {
+        return {
+            type: "dropdown",
+            default: "GRP",
+            choices: [
+                { id: "GRP", label: "Group" },
+                { id: "PRE", label: "Pre Fader" },
+                { id: "POST", label: "Post Fader" }
+            ]
+        }
     }
 
     static {
@@ -36,16 +48,21 @@ class BusMode {
 }
 
 @WingObject
-export class BusSend {
+export class BusSend implements UserFacingObject {
+    description: string;
     @WingProperty("on", Boolean)
-    @CompanionVariable("On")
+    @ExposedValue("On")
     on: boolean = false;
     @WingProperty("lvl", Number)
-    @CompanionVariable("Level")
+    @ExposedValue("Level", rangedNunberSelectType(-144, 10), true)
     level: number = 0;
     @WingProperty("pre", Boolean)
-    @CompanionVariable("Pre Fader")
+    @ExposedValue("Pre Fader")
     pre: boolean = false;
+
+    describe(): string {
+        return this.description;
+    }
 
     toString() {
         return "BusSend (on: " + this.on + ", level: " + this.level + ", pre: " + this.pre + ")";
@@ -53,22 +70,38 @@ export class BusSend {
 }
 
 @WingObject
-export class Bus extends Strip {
+export class Bus extends Strip implements UserFacingObject {
     @WingProperty("busmono", Boolean)
-    @CompanionVariable("Mono")
+    @ExposedValue("Mono")
     mono: boolean = false;
     @WingProperty("busmode", BusMode)
-    @CompanionVariable("Mode")
+    @ExposedValue("Mode", BusMode.selectType())
     mode: BusMode = BusMode.GRP;
     @WingProperty("main", Main, 4)
-    @CompanionVariable("Main Send")
+    @ExposedValue("Main Send")
     mainSends: Main[]; // 4
     @WingProperty("send", BusSend, 8, key => !key.startsWith("MX"))
-    @CompanionVariable("Bus Send")
+    @ExposedValue("Bus Send")
     busSends: BusSend[]; // 8
     @WingProperty("send", BusSend, 8, key => key.startsWith("MX"))
-    @CompanionVariable("Matrix Send")
+    @ExposedValue("Matrix Send")
     matrixSends: BusSend[]; // 8
+
+    describe() {
+        return "Bus " + this._id;
+    }
+
+    postParse() {
+        this.mainSends.forEach((main, i) => {
+            main.description = "Bus " + this._id + " Main " + i + 1;
+        });
+        this.busSends.forEach((bus, i) => {
+            bus.description = "Bus " + this._id + " Bus Send " + i + 1;
+        });
+        this.matrixSends.forEach((matrix, i) => {
+            matrix.description = "Bus " + this._id + " Matrix Send " + i + 1;
+        });
+    }
 
     toString() {
         var str = super.toString() + " (mono: " + this.mono + ", mode: " + this.mode + ", \nmain sends: [";
