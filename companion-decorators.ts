@@ -21,7 +21,6 @@ class ActionData {
         } else {
             return {
                 type: "dropdown",
-                default: "",
                 id: "target",
                 label: "Target",
                 choices: Array.from(this.targetChoices.values()).map((value) => {
@@ -29,7 +28,8 @@ class ActionData {
                         id: value.target["__jsonPath"],
                         label: value.description
                     }
-                })
+                }),
+                default: Array.from(this.targetChoices.values())[0].target["__jsonPath"]
             };
         }
     }
@@ -66,7 +66,6 @@ class FeedbackData {
         } else {
             return {
                 type: "dropdown",
-                default: "",
                 id: "target",
                 label: "Target",
                 choices: Array.from(this.targetChoices.values()).map((value) => {
@@ -74,7 +73,8 @@ class FeedbackData {
                         id: value.target["__jsonPath"],
                         label: value.description
                     }
-                })
+                }),
+                default: Array.from(this.targetChoices.values())[0].target["__jsonPath"]
             };
         }
     }
@@ -99,7 +99,7 @@ function registerFeedback(id: string, fieldName: string, description: string, ta
     }
 }
 
-export function ExposedValue(description: String, selectType: any = undefined, relative: boolean = false) {
+export function ExposedValue(description: String, selectType: any = undefined, relative: boolean = false, fade: boolean = true) {
     return function (target: any, property: ClassFieldDecoratorContext) {
         if (property == undefined) {
             throw new Error("WingProperty decorator must be used on a member variable");
@@ -157,8 +157,7 @@ export function ExposedValue(description: String, selectType: any = undefined, r
                                 variableId: varId
                             });
                             selectTypeObj = {
-                                ...selectTypeObj,
-                                default: this[variable.field]
+                                ...selectTypeObj
                             }
                             if (variable.min != undefined) {
                                 selectTypeObj["min"] = variable.min;
