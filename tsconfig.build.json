@@ -10,6 +10,9 @@
 		},
 		"module": "es2020",
 		"verbatimModuleSyntax": true,
-		"moduleResolution": "node"
+		"moduleResolution": "node",
+		"strict": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false
 	}
 }

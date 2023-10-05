@@ -1,38 +1,50 @@
-import { InstanceBase, runEntrypoint, InstanceStatus, type CompanionVariableDefinition, type CompanionVariableValues, type CompanionActionDefinition, type CompanionActionDefinitions, type CompanionFeedbackDefinitions } from '@companion-module/base'
+import { InstanceBase, runEntrypoint, InstanceStatus, type CompanionVariableDefinition, type CompanionVariableValues, type CompanionActionDefinition, type CompanionActionDefinitions, type CompanionFeedbackDefinitions, type OSCSomeArguments, type OSCMetaArgument } from '@companion-module/base'
 import { Regex, type SomeCompanionConfigField } from '@companion-module/base'
 import osc from 'osc';
 const { UDPPort } = osc
-import {parseSnapshot} from './schema/parse.js'
 import crypto from 'crypto'
-import { registerActionsAndFeedbacks } from './companion-decorators.js'
+import fs from 'fs'
+import { MixerState } from './mixer_state.js';
+import { setupIO } from './schema/io.js';
+import { setupChannels } from './schema/channels.js';
+import { setupBusses } from './schema/busses.js';
+import { setupMains } from './schema/mains.js';
+import { setupMatricies } from './schema/matricies.js';
+import { setupMuteGroups } from './schema/mute_groups.js';
 
-class ModuleInstance extends InstanceBase<any> {
+export class ModuleInstance extends InstanceBase<any> {
 	oscClient: typeof UDPPort = null
 	needStats = false
-	mixerState = {}
+	mixerState: MixerState = new MixerState()
+	runningFades: any = {}
 	
 	constructor(internal: any) {
 		super(internal)
 	}
 
 	async init(config: any) {
-		var schema = parseSnapshot();
-
-		const variables: CompanionVariableDefinition[] = []
-		const values: CompanionVariableValues = {}
-
-		schema.initCompanionData(variables, values)
-
-		this.setVariableDefinitions(variables)
-		this.setVariableValues(values)
-		registerActionsAndFeedbacks(this)
-
 		// this.log('debug', "Finished parsing schema" + schema);
 
-		this.updateActions() // export actions
-		this.updateFeedbacks() // export feedbacks
-		this.updateVariableDefinitions() // export variable definitions
+		// Parse JSON schema from file
+		this.mixerState.fromJson(fs.readFileSync("/Users/austinmayes/Desktop/Snapshot.snap", "utf8"))
+
+		var actions: CompanionActionDefinitions = {}
+		var variables: CompanionVariableDefinition[] = []
+		var feedbacks: CompanionFeedbackDefinitions = {}
+		
+		setupIO(this, actions, variables, feedbacks)
+		setupChannels(this, actions, variables, feedbacks)
+		setupBusses(this, actions, variables, feedbacks)
+		setupMains(this, actions, variables, feedbacks)
+		setupMatricies(this, actions, variables, feedbacks)
+		setupMuteGroups(this, actions, variables, feedbacks)
+
+		this.setActionDefinitions(actions)
+		this.setVariableDefinitions(variables)
+		this.setFeedbackDefinitions(feedbacks)
 		this.connect(config) // connect to device
+
+		setInterval(this.updateFades.bind(this), 100)
 	}
 	
 	// When module gets deleted
@@ -56,18 +68,6 @@ class ModuleInstance extends InstanceBase<any> {
 				regex: Regex.IP
 			}
 		]
-	}
-
-	updateActions() {
-		
-	}
-
-	updateFeedbacks() {
-		
-	}
-
-	updateVariableDefinitions() {
-
 	}
 
 	connect(config: any) {
@@ -108,8 +108,60 @@ class ModuleInstance extends InstanceBase<any> {
 
 	onOscMessage(args: string, address: string) {
 		this.log('debug', 'OSC message: ' + address + ' ' + args)
+		this.mixerState.set(address, args)
+	}
+	
+	sendOSC(address: string, args: OSCMetaArgument) {
+		address = address.toLowerCase()
+		this.log('debug', 'Sending OSC message: ' + address + ' ' + args.value)
+		// this.oscClient.sendOSC(address, args)
+		// this.log('debug', 'Sent OSC message: ' + address + ' ' + args.value)
 	}
 
+	sendOSCFloatingPoint(address: string, args: number) {
+		this.sendOSC(address, {type: 'f', value: args})
+	}
+
+	sendOSCInteger(address: string, args: number) {
+		this.sendOSC(address, {type: 'i', value: args})
+	}
+
+	sendOSCString(address: string, args: string) {
+		this.sendOSC(address, {type: 's', value: args})
+	}
+	
+	sendOSCBoolean(address: string, args: boolean) {
+		this.sendOSC(address, {type: 'i', value: args ? 1 : 0})
+	}
+
+	fadeValueTo(address: string, value: number, duration: number, ramp: boolean = true) {
+		if (duration <= 0) {
+			this.sendOSCFloatingPoint(address, value)
+			return
+		}
+		var current = this.mixerState.get(address)
+		this.runningFades[address] = {current: current, target: value, duration: duration * 1000, startTime: Date.now(), ramp: ramp}
+	}
+
+	private updateFades() {
+		var now = Date.now()
+		for (var address in this.runningFades) {
+			var fade = this.runningFades[address]
+			var elapsed = now - fade.startTime
+			if (elapsed >= fade.duration) {
+				this.sendOSCFloatingPoint(address, fade.target)
+				delete this.runningFades[address]
+			} else {
+				var progress = elapsed / fade.duration
+				var value = fade.current + (fade.target - fade.current) * progress
+				if (fade.ramp) {
+					var rampProgress = Math.pow(progress, 2)
+					value = fade.current + (fade.target - fade.current) * rampProgress
+				}
+				this.sendOSCFloatingPoint(address, value)
+			}
+		}
+	}
 }
 
 runEntrypoint(ModuleInstance, [])
