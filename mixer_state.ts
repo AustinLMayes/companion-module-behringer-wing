@@ -1,5 +1,13 @@
+import type { InstanceBase } from "@companion-module/base"
+import { log } from "console"
+
 export class MixerState {
     private internalState: any = {}
+    private instance: InstanceBase<any>
+
+    constructor(instance: InstanceBase<any>) {
+        this.instance = instance
+    }
 
     get(path: string): any {
         path = path.toLowerCase()
@@ -34,6 +42,8 @@ export class MixerState {
     }
 
     set(path: string, value: any): void {
+        if (path.startsWith("/"))
+            path = path.substring(1)
         path = path.toLowerCase()
         var mixerState = this.internalState
         var addressParts = path.split('/')
@@ -44,9 +54,32 @@ export class MixerState {
             mixerState = mixerState[addressParts[i]]
         }
         mixerState[addressParts[addressParts.length - 1]] = value
+        var varName = path.replace(/\//g, '_')
+        log('info', 'Setting variable ' + varName + ' to ' + value)
+        this.instance.setVariableValues({[varName]: value})
     }
 
     fromJson(json: string): void {
-        this.internalState = JSON.parse(json)['ae_data']
+        // Call setFromJsonTree for each key in the JSON object
+        var jsonObject = JSON.parse(json)['ae_data']
+        for (var key in jsonObject) {
+            if (jsonObject.hasOwnProperty(key)) {
+                this.setFromJsonTree(key, jsonObject[key])
+            } else
+                throw new Error('JSON object has no key ' + key)
+        }
+    }
+
+    setFromJsonTree(parent: string, json: any): void {
+        // If the JSON object is a primitive, set the value - else call setFromJsonTree for each key in the JSON object
+        if (json instanceof Object) {
+            for (var key in json) {
+                if (json.hasOwnProperty(key)) {
+                    this.setFromJsonTree(parent + '/' + key, json[key])
+                }
+            }
+        } else {
+            this.set(parent, json)
+        }
     }
 }
