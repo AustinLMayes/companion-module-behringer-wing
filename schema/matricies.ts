@@ -36,6 +36,13 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
         }
     }
 
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: 'mtx_' + i + '_name',
+            name: 'Matrix ' + i + ' Name'
+        })
+    }
+
     actions["set_matrix_led"] = {
         name: "Set Matrix Scribble Light",
         description: "Turn the scribble light on or off for the specified matrix",
@@ -53,6 +60,13 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
             const selectedLed = action.options.led as boolean
             instance.sendOSCInteger('/mtx/' + selectedMatrix + '/led', selectedLed ? 1 : 0)
         }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: 'mtx_' + i + '_led',
+            name: 'Matrix ' + i + ' Scribble Light'
+        })
     }
 
     actions["set_matrix_mono"] = {
@@ -74,6 +88,13 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
         }
     }
 
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: 'mtx_' + i + '_busmono',
+            name: 'Matrix ' + i + ' Mono'
+        })
+    }
+
     actions["set_matrix_mute"] = {
         name: "Set Matrix Mute",
         description: "Mute or unmute the specified matrix",
@@ -91,6 +112,13 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
             const selectedMute = action.options.mute as boolean
             instance.sendOSCInteger('/mtx/' + selectedMatrix + '/mute', selectedMute ? 1 : 0)
         }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: 'mtx_' + i + '_mute',
+            name: 'Matrix ' + i + ' Muted'
+        })
     }
 
     actions["set_matrix_fader"] = {
@@ -124,6 +152,13 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
         }
     }
 
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: 'mtx_' + i + '_fdr',
+            name: 'Matrix ' + i + ' Fader'
+        })
+    }
+
     actions["set_matrix_pan"] = {
         name: "Set Matrix Pan",
         description: "Set the pan position for the specified matrix",
@@ -155,6 +190,13 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
         }
     }
 
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: 'mtx_' + i + '_pan',
+            name: 'Matrix ' + i + ' Pan'
+        })
+    }
+
     actions["set_matrix_width"] = {
         name: "Set Matrix Width",
         description: "Set the width for the specified matrix",
@@ -182,8 +224,15 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
             const selectedOption = action.options.width as number
             const selectedDuration = action.options.fade_duration as number
             const selectedMatrix = action.options.matrix as string
-            instance.fadeValueTo('/mtx/' + selectedMatrix + '/width', selectedOption, selectedDuration)
+            instance.fadeValueTo('/mtx/' + selectedMatrix + '/wid', selectedOption, selectedDuration)
         }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: 'mtx_' + i + '_wid',
+            name: 'Matrix ' + i + ' Width'
+        })
     }
 
     actions["set_matrix_dir_on"] = {
@@ -219,6 +268,15 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
             const selectedDirectIn = action.options.direct_in as boolean
             const selectedMatrix = action.options.matrix as string
             instance.sendOSCInteger('/mtx/' + selectedMatrix + '/dir/' + selectedOption + '/on', selectedDirectIn ? 1 : 0)
+        }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        for (let j = 1; j <= 2; j++) {
+            variables.push({
+                variableId: 'mtx_' + i + '_dir_' + j + '_on',
+                name: 'Matrix ' + i + ' Direct In ' + j + ' On'
+            })
         }
     }
 
@@ -298,6 +356,15 @@ export function setupMatricies(instance: ModuleInstance, actions: CompanionActio
             const selectedDirectIn = action.options.in as string
             const selectedMatrix = action.options.matrix as string
             instance.fadeValueTo('/mtx/' + selectedMatrix + '/dir/' + selectedDirectIn + '/lvl', selectedOption, selectedDuration)
+        }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        for (let j = 1; j <= 2; j++) {
+            variables.push({
+                variableId: 'mtx_' + i + '_dir_' + j + '_lvl',
+                name: 'Matrix ' + i + ' Direct In ' + j + ' Level'
+            })
         }
     }
 

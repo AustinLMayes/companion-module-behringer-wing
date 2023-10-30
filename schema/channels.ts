@@ -40,6 +40,20 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
         }
     }
 
+    for (let i = 1; i <= 40; i++) {
+        variables.push({
+            variableId: "ch_" + i + "_name",
+            name: "Channel " + i + " Name",
+        })
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: "aux_" + i + "_name",
+            name: "Aux " + i + " Name",
+        })
+    }
+
     actions["set_ch_led"] = {
         name: "Set Channel Scribble Light",
         description: "Turn the scribble light on or off for the specified channel",
@@ -60,6 +74,20 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
         }
     }
 
+    for (let i = 1; i <= 40; i++) {
+        variables.push({
+            variableId: "ch_" + i + "_led",
+            name: "Channel " + i + " Scribble Light",
+        })
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: "aux_" + i + "_led",
+            name: "Aux " + i + " Scribble Light",
+        })
+    }
+
     actions["set_ch_mute"] = {
         name: "Set Channel Mute",
         description: "Mute or unmute the specified channel",
@@ -78,6 +106,20 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
             selectedChannel = selectedChannel.replace('_', '/')
             instance.sendOSCBoolean('/' + selectedChannel + '/mute', selectedOption)
         }
+    }
+
+    for (let i = 1; i <= 40; i++) {
+        variables.push({
+            variableId: "ch_" + i + "_mute",
+            name: "Channel " + i + " Muted",
+        })
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: "aux_" + i + "_mute",
+            name: "Aux " + i + " Muted",
+        })
     }
 
     actions["set_ch_fader"] = {
@@ -112,6 +154,20 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
         }
     }
 
+    for (let i = 1; i <= 40; i++) {
+        variables.push({
+            variableId: "ch_" + i + "_fdr",
+            name: "Channel " + i + " Fader",
+        })
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: "aux_" + i + "_fdr",
+            name: "Aux " + i + " Fader",
+        })
+    }
+
     actions["set_ch_pan"] = {
         name: "Set Channel Pan",
         description: "Set the pan position for the specified channel",
@@ -142,6 +198,20 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
             selectedChannel = selectedChannel.replace('_', '/')
             instance.fadeValueTo('/' + selectedChannel + '/pan', selectedOption, selectedDuration)
         }
+    }
+
+    for (let i = 1; i <= 40; i++) {
+        variables.push({
+            variableId: "ch_" + i + "_pan",
+            name: "Channel " + i + " Pan",
+        })
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: "aux_" + i + "_pan",
+            name: "Aux " + i + " Pan",
+        })
     }
 
     actions["set_ch_width"] = {
@@ -176,6 +246,20 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
         }
     }
 
+    for (let i = 1; i <= 40; i++) {
+        variables.push({
+            variableId: "ch_" + i + "_wid",
+            name: "Channel " + i + " Width",
+        })
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        variables.push({
+            variableId: "aux_" + i + "_wid",
+            name: "Aux " + i + " Width",
+        })
+    }
+
     actions["set_ch_main_on"] = {
         name: "Set Channel Main On",
         description: "Turn the specified main output for the specified channel on or off",
@@ -195,6 +279,24 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
             var selectedChannel = action.options.channel as string
             selectedChannel = selectedChannel.replace('_', '/')
             instance.sendOSCBoolean('/' + selectedChannel + '/main/' + selectedMain + '/on', selectedOption)
+        }
+    }
+
+    for (let i = 1; i <= 40; i++) {
+        for (let j = 1; j <= 4; j++) {
+            variables.push({
+                variableId: "ch_" + i + "_main_" + j + "_on",
+                name: "Channel " + i + " Main " + j + " On",
+            })
+        }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        for (let j = 1; j <= 4; j++) {
+            variables.push({
+                variableId: "aux_" + i + "_main_" + j + "_on",
+                name: "Aux " + i + " Main " + j + " On",
+            })
         }
     }
 
@@ -232,6 +334,24 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
         }
     }
 
+    for (let i = 1; i <= 40; i++) {
+        for (let j = 1; j <= 4; j++) {
+            variables.push({
+                variableId: "ch_" + i + "_main_" + j + "_lvl",
+                name: "Channel " + i + " Main " + j + " Level",
+            })
+        }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        for (let j = 1; j <= 4; j++) {
+            variables.push({
+                variableId: "aux_" + i + "_main_" + j + "_lvl",
+                name: "Aux " + i + " Main " + j + " Level",
+            })
+        }
+    }
+
     actions["set_ch_bus_on"] = {
         name: "Set Channel Bus On",
         description: "Turn the specified bus output for the specified channel on or off",
@@ -251,6 +371,24 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
             var selectedChannel = action.options.channel as string
             selectedChannel = selectedChannel.replace('_', '/')
             instance.sendOSCBoolean('/' + selectedChannel + '/send/' + selectedBus + '/on', selectedOption)
+        }
+    }
+
+    for (let i = 1; i <= 40; i++) {
+        for (let j = 1; j <= 16; j++) {
+            variables.push({
+                variableId: "ch_" + i + "_send_" + j + "_on",
+                name: "Channel " + i + " Bus " + j + " On",
+            })
+        }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        for (let j = 1; j <= 16; j++) {
+            variables.push({
+                variableId: "aux_" + i + "_send_" + j + "_on",
+                name: "Aux " + i + " Bus " + j + " On",
+            })
         }
     }
 
@@ -285,6 +423,24 @@ export function setupChannels(instance: ModuleInstance, actions: CompanionAction
             var selectedChannel = action.options.channel as string
             selectedChannel = selectedChannel.replace('_', '/')
             instance.fadeValueTo('/' + selectedChannel + '/send/' + selectedBus + '/lvl', selectedOption, selectedDuration)
+        }
+    }
+
+    for (let i = 1; i <= 40; i++) {
+        for (let j = 1; j <= 16; j++) {
+            variables.push({
+                variableId: "ch_" + i + "_send_" + j + "_lvl",
+                name: "Channel " + i + " Bus " + j + " Level",
+            })
+        }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        for (let j = 1; j <= 16; j++) {
+            variables.push({
+                variableId: "aux_" + i + "_send_" + j + "_lvl",
+                name: "Aux " + i + " Bus " + j + " Level",
+            })
         }
     }
 }

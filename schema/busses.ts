@@ -36,6 +36,13 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
         }
     }
 
+    for (let i = 1; i <= 16; i++) {
+        variables.push({
+            variableId: "bus_" + i + "_name",
+            name: "Bus " + i + " Name"
+        })
+    }
+
     actions["set_bus_led"] = {
         name: "Set Bus Scribble Light",
         description: "Turn the scribble light on or off for the specified bus",
@@ -53,6 +60,13 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
             const selectedLed = action.options.led as boolean
             instance.sendOSCInteger('/bus/' + selectedBus + '/led', selectedLed ? 1 : 0)
         }
+    }
+
+    for (let i = 1; i <= 16; i++) {
+        variables.push({
+            variableId: "bus_" + i + "_led",
+            name: "Bus " + i + " Scribble Light"
+        })
     }
 
     actions["set_bus_mono"] = {
@@ -74,6 +88,13 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
         }
     }
 
+    for (let i = 1; i <= 16; i++) {
+        variables.push({
+            variableId: "bus_" + i + "_busmono",
+            name: "Bus " + i + " Mono"
+        })
+    }
+
     actions["set_bus_mute"] = {
         name: "Set Bus Mute",
         description: "Mute or unmute the specified bus",
@@ -91,6 +112,13 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
             const selectedMute = action.options.mute as boolean
             instance.sendOSCInteger('/bus/' + selectedBus + '/mute', selectedMute ? 1 : 0)
         }
+    }
+
+    for (let i = 1; i <= 16; i++) {
+        variables.push({
+            variableId: "bus_" + i + "_mute",
+            name: "Bus " + i + " Muted"
+        })
     }
 
     actions["set_bus_fader"] = {
@@ -124,6 +152,13 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
         }
     }
 
+    for (let i = 1; i <= 16; i++) {
+        variables.push({
+            variableId: "bus_" + i + "_fdr",
+            name: "Bus " + i + " Fader Level"
+        })
+    }
+
     actions["set_bus_pan"] = {
         name: "Set Bus Pan",
         description: "Set the pan position for the specified bus",
@@ -155,6 +190,13 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
         }
     }
 
+    for (let i = 1; i <= 16; i++) {
+        variables.push({
+            variableId: "bus_" + i + "_pan",
+            name: "Bus " + i + " Pan Position"
+        })
+    }
+
     actions["set_bus_width"] = {
         name: "Set Bus Width",
         description: "Set the width for the specified bus",
@@ -182,8 +224,15 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
             const selectedOption = action.options.width as number
             const selectedDuration = action.options.fade_duration as number
             const selectedBus = action.options.bus as string
-            instance.fadeValueTo('/bus/' + selectedBus + '/width', selectedOption, selectedDuration)
+            instance.fadeValueTo('/bus/' + selectedBus + '/wid', selectedOption, selectedDuration)
         }
+    }
+
+    for (let i = 1; i <= 16; i++) {
+        variables.push({
+            variableId: "bus_" + i + "_wid",
+            name: "Bus " + i + " Pan Width"
+        })
     }
 
     actions["set_bus_main_on"] = {
@@ -204,6 +253,15 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
             const selectedMain = action.options.main as number
             const selectedBus = action.options.bus as string
             instance.sendOSCBoolean('/bus/' + selectedBus + '/main/' + selectedMain + '/on', selectedOption)
+        }
+    }
+
+    for (let i = 1; i <= 16; i++) {
+        for (let j = 1; j <= 4; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_main_" + j + "_on",
+                name: "Bus " + i + " Main " + j + " On"
+            })
         }
     }
 
@@ -240,6 +298,15 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
         }
     }
 
+    for (let i = 1; i <= 16; i++) {
+        for (let j = 1; j <= 4; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_main_" + j + "_lvl",
+                name: "Bus " + i + " Main " + j + " Level"
+            })
+        }
+    }
+
     actions["set_ch_bus_on"] = {
         name: "Set Bus Send On",
         description: "Turn the specified bus/matrix output for the specified bus on or off",
@@ -258,6 +325,22 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
             const selectedBus = action.options.bus as number
             const selectedBusMatrix = action.options.bus_mx as string
             instance.sendOSCBoolean('/bus/' + selectedBus + '/send/' + selectedBusMatrix + '/on', selectedOption)
+        }
+    }
+
+    for (let i = 1; i <= 16; i++) {
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_send_" + j + "_on",
+                name: "Bus " + i + " Send " + j + " On"
+            })
+        }
+
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_send_mx" + j + "_on",
+                name: "Bus " + i + " Matrix Send " + j + " On"
+            })
         }
     }
 
@@ -294,6 +377,22 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
         }
     }
 
+    for (let i = 1; i <= 16; i++) {
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_send_" + j + "_lvl",
+                name: "Bus " + i + " Send " + j + " Level"
+            })
+        }
+
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_send_mx" + j + "_lvl",
+                name: "Bus " + i + " Matrix Send " + j + " Level"
+            })
+        }
+    }
+
     actions["set_ch_bus_pre"] = {
         name: "Set Channel Bus Pre",
         description: "Set the pre/post setting for the specified bus/matrix output for the specified bus",
@@ -312,6 +411,22 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
             const selectedBus = action.options.bus as number
             const selectedBusMatrix = action.options.bus_mx as string
             instance.sendOSCBoolean('/bus/' + selectedBus + '/send/' + selectedBusMatrix + '/pre', selectedOption)
+        }
+    }
+
+    for (let i = 1; i <= 16; i++) {
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_send_" + j + "_pre",
+                name: "Bus " + i + " Send " + j + " Pre"
+            })
+        }
+
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_send_mx" + j + "_pre",
+                name: "Bus " + i + " Matrix Send " + j + " Pre"
+            })
         }
     }
 

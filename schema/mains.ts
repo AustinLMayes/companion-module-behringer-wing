@@ -36,6 +36,13 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
         }
     }
 
+    for (let i = 1; i <= 4; i++) {
+        variables.push({
+            variableId: "main_" + i + "_name",
+            name: "Main " + i + " Name"
+        })
+    }
+
     actions["set_main_led"] = {
         name: "Set Main Scribble Light",
         description: "Turn the scribble light on or off for the specified main",
@@ -53,6 +60,13 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
             const selectedLed = action.options.led as boolean
             instance.sendOSCInteger('/main/' + selectedMain + '/led', selectedLed ? 1 : 0)
         }
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        variables.push({
+            variableId: "main_" + i + "_led",
+            name: "Main " + i + " Scribble Light"
+        })
     }
 
     actions["set_main_mono"] = {
@@ -74,6 +88,13 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
         }
     }
 
+    for (let i = 1; i <= 4; i++) {
+        variables.push({
+            variableId: "main_" + i + "_busmono",
+            name: "Main " + i + " Mono"
+        })
+    }
+
     actions["set_main_mute"] = {
         name: "Set Main Mute",
         description: "Mute or unmute the specified main",
@@ -91,6 +112,13 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
             const selectedMute = action.options.mute as boolean
             instance.sendOSCInteger('/main/' + selectedMain + '/mute', selectedMute ? 1 : 0)
         }
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        variables.push({
+            variableId: "main_" + i + "_mute",
+            name: "Main " + i + " Muted"
+        })
     }
 
     actions["set_main_fader"] = {
@@ -124,6 +152,13 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
         }
     }
 
+    for (let i = 1; i <= 4; i++) {
+        variables.push({
+            variableId: "main_" + i + "_fdr",
+            name: "Main " + i + " Fader"
+        })
+    }
+
     actions["set_main_pan"] = {
         name: "Set Main Pan",
         description: "Set the pan position for the specified main",
@@ -155,6 +190,13 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
         }
     }
 
+    for (let i = 1; i <= 4; i++) {
+        variables.push({
+            variableId: "main_" + i + "_pan",
+            name: "Main " + i + " Pan"
+        })
+    }
+
     actions["set_main_width"] = {
         name: "Set Main Width",
         description: "Set the width for the specified main",
@@ -182,8 +224,15 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
             const selectedOption = action.options.width as number
             const selectedDuration = action.options.fade_duration as number
             const selectedMain = action.options.main as string
-            instance.fadeValueTo('/main/' + selectedMain + '/width', selectedOption, selectedDuration)
+            instance.fadeValueTo('/main/' + selectedMain + '/wid', selectedOption, selectedDuration)
         }
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        variables.push({
+            variableId: "main_" + i + "_wid",
+            name: "Main " + i + " Width"
+        })
     }
 
     actions["set_main_mtx_on"] = {
@@ -204,6 +253,15 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
             const selectedMain = action.options.main as string
             const selectedMatrix = action.options.matrix as string
             instance.sendOSCInteger('/main/' + selectedMain + '/send/MX' + selectedMatrix + '/on', selectedOption ? 1 : 0)
+        }
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "main_" + i + "_send_mx" + j + "_on",
+                name: "Main " + i + " Matrix Send " + j + " On"
+            })
         }
     }
 
@@ -240,6 +298,15 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
         }
     }
 
+    for (let i = 1; i <= 4; i++) {
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "main_" + i + "_send_mx" + j + "_lvl",
+                name: "Main " + i + " Matrix Send " + j + " Level"
+            })
+        }
+    }
+
     actions["set_main_mtx_pre"] = {
         name: "Set Main Send Pre",
         description: "Set the pre/post setting for the specified matrix send for the specified main",
@@ -258,6 +325,15 @@ export function setupMains(instance: ModuleInstance, actions: CompanionActionDef
             const selectedMain = action.options.main as string
             const selectedMatrix = action.options.matrix as string
             instance.sendOSCInteger('/main/' + selectedMain + '/send/MX' + selectedMatrix + '/pre', selectedOption ? 1 : 0)
+        }
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "main_" + i + "_send_mx" + j + "_pre",
+                name: "Main " + i + " Matrix Send " + j + " Pre"
+            })
         }
     }
 }
