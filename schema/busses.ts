@@ -307,7 +307,16 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
         }
     }
 
-    actions["set_ch_bus_on"] = {
+    for (let i = 1; i <= 16; i++) {
+        for (let j = 1; j <= 4; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_main_" + j + "_lvl",
+                name: "Bus " + i + " Main " + j + " Level"
+            })
+        }
+    }
+
+    actions["set_bus_send_on"] = {
         name: "Set Bus Send On",
         description: "Turn the specified bus/matrix output for the specified bus on or off",
         options: [
@@ -393,8 +402,24 @@ export function setupBusses(instance: ModuleInstance, actions: CompanionActionDe
         }
     }
 
-    actions["set_ch_bus_pre"] = {
-        name: "Set Channel Bus Pre",
+    for (let i = 1; i <= 16; i++) {
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_send_" + j + "_lvl",
+                name: "Bus " + i + " Send " + j + " Level"
+            })
+        }
+
+        for (let j = 1; j <= 8; j++) {
+            variables.push({
+                variableId: "bus_" + i + "_send_mx" + j + "_lvl",
+                name: "Bus " + i + " Matrix Send " + j + " Level"
+            })
+        }
+    }
+
+    actions["set_bus_send_pre"] = {
+        name: "Set Bus Send Pre",
         description: "Set the pre/post setting for the specified bus/matrix output for the specified bus",
         options: [
             busDropdown,
