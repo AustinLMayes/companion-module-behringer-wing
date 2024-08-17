@@ -9,11 +9,6 @@ export class MixerState {
     constructor(instance: InstanceBase<any>) {
         this.instance = instance
     }
-    private instance: InstanceBase<any>
-
-    constructor(instance: InstanceBase<any>) {
-        this.instance = instance
-    }
 
     get(path: string): any {
         path = path.toLowerCase()
