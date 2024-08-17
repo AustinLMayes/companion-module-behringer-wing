@@ -1,5 +1,4 @@
 import { InstanceBase, runEntrypoint, InstanceStatus, type CompanionVariableDefinition, type CompanionVariableValues, type CompanionActionDefinition, type CompanionActionDefinitions, type CompanionFeedbackDefinitions, type OSCSomeArguments, type OSCMetaArgument, type OSCArgument } from '@companion-module/base'
-import { InstanceBase, runEntrypoint, InstanceStatus, type CompanionVariableDefinition, type CompanionVariableValues, type CompanionActionDefinition, type CompanionActionDefinitions, type CompanionFeedbackDefinitions, type OSCSomeArguments, type OSCMetaArgument, type OSCArgument } from '@companion-module/base'
 import { Regex, type SomeCompanionConfigField } from '@companion-module/base'
 import osc from 'osc';
 const { UDPPort } = osc
@@ -19,7 +18,6 @@ var writeData = false
 export class ModuleInstance extends InstanceBase<any> {
 	oscClient: typeof UDPPort = null
 	needStats = false
-	mixerState: MixerState = new MixerState(this)
 	mixerState: MixerState = new MixerState(this)
 	runningFades: any = {}
 	pendingOscRequests: any = {}
@@ -244,7 +242,6 @@ export class ModuleInstance extends InstanceBase<any> {
 			metadata: true
 		})
 		this.log('info', 'Local port: ' + this.oscClient.options.localPort)
-		this.log('info', 'Local port: ' + this.oscClient.options.localPort)
 		this.oscClient.on('ready', () => {
 			this.log('info', 'Connected')
 			this.requestOSCValue("/?", (args) => {
@@ -278,7 +275,6 @@ export class ModuleInstance extends InstanceBase<any> {
 		this.mixerState.set(address, arg.value);
 	}
 	
-	sendOSC(address: string, args: Array<OSCMetaArgument>) {
 	sendOSC(address: string, args: Array<OSCMetaArgument>) {
 		address = address.toLowerCase()
 		this.log('info', 'Sending OSC message: ' + address + ' ' + (args.length == 0 ? "" : args[0].value))
